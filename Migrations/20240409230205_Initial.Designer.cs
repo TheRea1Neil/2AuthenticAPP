@@ -11,14 +11,14 @@ using _2AuthenticAPP.Data;
 namespace _2AuthenticAPP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240404005304_CreateIdentitySchema")]
-    partial class CreateIdentitySchema
+    [Migration("20240409230205_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
