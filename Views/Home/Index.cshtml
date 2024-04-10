@@ -2,7 +2,166 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="filter-section">
+        <h4>Filter</h4>
+        <div class="form-group">
+            <select>
+                <option value="">Popular</option>
+                <option value="">Top 5</option>
+                <option value="">Newest</option>
+                <option value="">Oldest</option>
+                <!-- Add more options -->
+            </select>
+        </div>
+
+        <h4>Category</h4>
+        <div class="form-group">
+            <label><input type="checkbox"> Star Wars</label>
+            <label><input type="checkbox"> DC</label>
+            <label><input type="checkbox"> Harry Potter</label>
+            <label><input type="checkbox"> Technic</label>
+            <label><input type="checkbox"> Vehicle</label>
+            <label><input type="checkbox"> Perion</label>
+            <label><input type="checkbox"> See More</label>
+        </div>
+
+        <h4>Number of Parts</h4>
+        <div class="form-group">
+            <label><input type="radio" name="parts"> 0 - 99</label>
+            <label><input type="radio" name="parts"> 100 - 499</label>
+            <label><input type="radio" name="parts"> 500 - 999</label>
+            <label><input type="radio" name="parts"> 1000+</label>
+        </div>
+
+        <h4>Price</h4>
+        <div class="form-group">
+            <label>Min: <input type="number" min="0" step="1"></label>
+            <label>Max: <input type="number" min="0" step="1"></label>
+        </div>
+
+        <h4>Primary Color</h4>
+        <div class="form-group">
+            <select>
+                <option value="">Select Color</option>
+                <!-- Add more color options -->
+            </select>
+        </div>
+
+        <h4>Secondary Color</h4>
+        <div class="form-group">
+            <select>
+                <option value="">Select Color</option>
+                <!-- Add more color options -->
+            </select>
+        </div>
+    </div>
+
+    <div class="product-grid">
+        <h2>Popular Items</h2>
+        <div class="product-row">
+            <div class="product-card">
+                <img src="~/images/product1.jpg" alt="Product 1">
+                <h3>Ferrari F1 Racer 1:8</h3>
+                <div class="rating">
+                    <span>4</span>
+                    <span>&#9733;</span>
+                </div>
+                <div class="price">$65</div>
+                <button class="btn">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="~/images/product1.jpg" alt="Product 1">
+                <h3>Ferrari F1 Racer 1:8</h3>
+                <div class="rating">
+                    <span>4</span>
+                    <span>&#9733;</span>
+                </div>
+                <div class="price">$65</div>
+                <button class="btn">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="~/images/product1.jpg" alt="Product 1">
+                <h3>Ferrari F1 Racer 1:8</h3>
+                <div class="rating">
+                    <span>4</span>
+                    <span>&#9733;</span>
+                </div>
+                <div class="price">$65</div>
+                <button class="btn">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-row">
+            <div class="product-card">
+                <img src="~/images/product1.jpg" alt="Product 1">
+                <h3>Ferrari F1 Racer 1:8</h3>
+                <div class="rating">
+                    <span>4</span>
+                    <span>&#9733;</span>
+                </div>
+                <div class="price">$65</div>
+                <button class="btn">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="~/images/product1.jpg" alt="Product 1">
+                <h3>Ferrari F1 Racer 1:8</h3>
+                <div class="rating">
+                    <span>4</span>
+                    <span>&#9733;</span>
+                </div>
+                <div class="price">$65</div>
+                <button class="btn">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="~/images/product1.jpg" alt="Product 1">
+                <h3>Ferrari F1 Racer 1:8</h3>
+                <div class="rating">
+                    <span>4</span>
+                    <span>&#9733;</span>
+                </div>
+                <div class="price">$65</div>
+                <button class="btn">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-row">
+            <div class="product-card">
+                <img src="~/images/product1.jpg" alt="Product 1">
+                <h3>Ferrari F1 Racer 1:8</h3>
+                <div class="rating">
+                    <span>4</span>
+                    <span>&#9733;</span>
+                </div>
+                <div class="price">$65</div>
+                <button class="btn">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="~/images/product1.jpg" alt="Product 1">
+                <h3>Ferrari F1 Racer 1:8</h3>
+                <div class="rating">
+                    <span>4</span>
+                    <span>&#9733;</span>
+                </div>
+                <div class="price">$65</div>
+                <button class="btn">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="~/images/product1.jpg" alt="Product 1">
+                <h3>Ferrari F1 Racer 1:8</h3>
+                <div class="rating">
+                    <span>4</span>
+                    <span>&#9733;</span>
+                </div>
+                <div class="price">$65</div>
+                <button class="btn">Add to Cart</button>
+            </div>
+        </div>
+        <!-- Comment: The actual product data will be loaded from the database later -->
+
+        <div class="pagination">
+            <a href="#">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <!-- Add more page numbers -->
+        </div>
+    </div>
 </div>
