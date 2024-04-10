@@ -177,187 +177,60 @@ main {
     color: #fff;
 }
 
-.login-container {
-    max-width: 500px;
-    margin: 2em auto;
-    padding: 2.5em;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.login-form h2 {
-    font-size: 2em;
-    margin-bottom: 0.5em;
-}
-
-.login-form p {
-    font-size: 1em;
-    margin-bottom: 1.5em;
-}
-
-.form-group {
-    margin-bottom: 1em;
-}
-
-.form-group .radio-group {
+.center-box {
     display: flex;
-    justify-content: start;
-    gap: 1em;
-}
-
-.divider-or {
+    justify-content: center;
+    align-items: start; /* Changed from 'center' to 'start' to move it up */
+    min-height: 90vh; /* Reduced from 100vh to move the box up */
     text-align: center;
-    margin: 1em 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding-top: 10px; /* You can adjust this value to move the box up */
 }
 
-.radio-group {
-    margin-bottom: 1em; /* Adjust the space below the entire group */
+    .center-box .row {
+        max-width: 500px; /* Increased the max-width to make it longer */
+        margin-top: 0; /* You can reduce the top margin to move it up */
+        width: 100%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+    }
+
+#login-submit, .google-btn {
+    color: white; /* White text for both buttons */
+    font-size: 14px; /* Same font size for both buttons */
+    border-radius: 5px; /* Same border radius for both buttons */
+    padding: 10px 20px; /* Same padding for both buttons */
+    border: none; /* No border for a flat design */
+    font-weight: bold; /* Bold font for both buttons */
+    text-transform: uppercase; /* Uppercase text for both buttons */
+    cursor: pointer; /* Hand cursor on hover */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Same shadow for both */
 }
 
-/* Style for each radio button and its label */
-.radio-option {
-    display: inline-block; /* Aligns radio button with label on the same line */
-    margin-right: 1em; /* Space between each radio option */
+/* Styles for the login button */
+#login-submit {
+    background-color: #17C144; /* Green background for login button */
 }
 
-/* Style for radio button labels */
-.radio-option label {
-    margin-left: 0.5em; /* Space between the radio button and its label */
+    #login-submit:hover {
+        background-color: #15a93d; /* Darker green on hover for login button */
+    }
+
+/* Styles for the Google button */
+.google-btn {
+    background-color: #db4437; /* Google red background for Google button */
+}
+
+    .google-btn:hover {
+        background-color: #c1351d; /* Darker red on hover for Google button */
+    }
+
+.form-label, .form-control {
+    display: block; /* This makes each element take the full width */
+    width: 100%; /* Ensures they take up 100% of the container's width */
 }
 
 .form-control {
-    width: 100%;
-    padding: 1em;
-    font-size: 1em;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 1em;
-}
-
-.form-control::placeholder {
-    color: #495057;
-    opacity: 1;
-}
-
-.btn-signin, .btn-google {
-    padding: 1em;
-    font-size: 1em;
-    border-radius: 4px;
-    margin-bottom: 0.5em;
-    border: none;
-    cursor: pointer;
-}
-
-.btn-signin {
-    background-color: #44c767;
-    color: #ffffff;
-}
-
-.btn-signin:hover, .btn-signin:active, .btn-signin:focus {
-    color: #ffffff;
-}
-
-.btn-google {
-    color: #dd4b39;
-    background-color: transparent;
-    border: 1px solid #dd4b39;
-    display: inline-block;
-}
-
-.btn-google:hover {
-    background-color: #dd4b39;
-    color: #ffffff;
-}
-
-.btn-center {
-    display: block;
-    margin: 0 auto;
-}
-
-.login-form .form-group p {
-    font-size: 1em;
-}
-
-.signup-link {
-    font-size: 1em;
-    color: #007bff;
-    text-decoration: none;
-    display: block;
-}
-
-.signup-link:hover {
-    text-decoration: underline;
-}
-
-input[type="radio"] {
-    margin-right: 0.5em;
-}
-
-.join-now {
-    font-size: 1.25em;
-}
-
-.slogan {
-    font-size: 1.5em;
-}
-
-.about-container {
-    max-width: 800px; /* Adjust as needed */
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center; /* Center text */
-    color: #333; /* Dark text color */
-}
-
-    .about-container h2 {
-        font-size: 1.5em; /* Adjust as needed */
-        font-weight: bold;
-        margin: 10px 0; /* Spacing between headers */
-    }
-
-.slogan {
-    font-size: 1.2em; /* Adjust as needed */
-    margin: 20px 0; /* Spacing around slogan */
-}
-
-.about-container {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto; /* Center the container */
-}
-
-.left-column, .right-column {
-    flex-basis: 50%; /* Allocate 50% of the container width to each column */
-    padding: 20px;
-}
-
-.left-column {
-    /* Additional styles if needed */
-}
-
-.right-column {
-    /* Additional styles if needed */
-}
-
-h1 {
-    font-size: 1.5rem; /* Adjust as needed */
-    margin-bottom: 0.5em;
-}
-
-h2 {
-    font-size: 2rem; /* Adjust as needed */
-    color: #000; /* Adjust color as needed */
-}
-
-p {
-    margin-bottom: 1em;
-}
-
-a {
-    color: #0066cc; /* Adjust link color as needed */
-    text-decoration: none;
+    margin-top: 0.5rem; /* This adds some space between the label and the input */
 }
