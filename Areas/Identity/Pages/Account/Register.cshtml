@@ -4,61 +4,97 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
-
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
+<div class="login-center-box">
+    <div class="row">
+        <div class="col-md-4">
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h1>Create New Account</h1>
+                <br />
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="form-floating mb-3">
+                    <label class="form-label" asp-for="Input.FirstName">First Name</label>
+                    <input asp-for="Input.FirstName" class="form-control" autocomplete="given-name" aria-required="true" placeholder="First Name" />
+                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <label class="form-label" asp-for="Input.LastName">Last Name</label>
+                    <input asp-for="Input.LastName" class="form-control" autocomplete="family-name" aria-required="true" placeholder="Last Name" />
+                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <label class="form-label" asp-for="Input.Email">Email</label>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Gender</label>
+                    <div class="radio-buttons">
+                        <input asp-for="Input.Gender" type="radio" id="gender_male" value="Male" class="form-check-input" />
+                        <label class="form-check-label" for="gender_male">Male</label>
+                        <input asp-for="Input.Gender" type="radio" id="gender_female" value="Female" class="form-check-input" />
+                        <label class="form-check-label" for="gender_female">Female</label>
                     </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                </div>
+                <br/>
+                <div class="form-floating mb-3">
+                    <label class="form-label" asp-for="Input.Birthday">Date of Birth</label>
+                    <input asp-for="Input.Birthday" type="date" class="form-control" aria-required="true" />
+                    <span asp-validation-for="Input.Birthday" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <label class="form-label" asp-for="Input.Country">Country</label>
+                    <input asp-for="Input.Country" class="form-control" autocomplete="country-name" aria-required="true" placeholder="Country" />
+                    <span asp-validation-for="Input.Country" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <label class="form-label" asp-for="Input.Password">Password</label>
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <label class="form-label" asp-for="Input.ConfirmPassword">Confirm Password</label>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm password" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="button-container">
+                    <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6 col-md-offset-2">
+            <section>
+                <div class="or-container">
+                    <p>-OR-</p>
+                </div>
+                <h2 class="text-center">Register with Google</h2>
+                <br />
+                @{
+                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                    {
                         <div>
                             <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
+                                There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
+                                about setting up this ASP.NET application to support logging in via external services</a>.
                             </p>
                         </div>
-                    </form>
+                    }
+                    else
+                    {
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                            <div class ="button-container">
+                                <p>
+                                    @foreach (var provider in Model.ExternalLogins!)
+                                    {
+                                        <button type="submit" class="btn google-btn" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                    }
+                                </p>
+                            </div>
+                        </form>
+                    }
                 }
-            }
-        </section>
+            </section>
+        </div>
     </div>
 </div>
 

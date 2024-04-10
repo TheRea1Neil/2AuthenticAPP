@@ -418,60 +418,145 @@ main {
     border: none;
 }
 
-.center-box {
+.login-center-box {
+    max-width: 400px; /* Limiting the maximum width */
+    margin: 2rem auto; /* Adding top margin and centering */
+    padding: 2rem;
+    background: #fff; /* Optional: Background color for the form area */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: Adding some shadow for depth */
+    border-radius: 8px; /* Optional: Rounded corners for the form area */
+}
+
+    .login-center-box .text-center {
+        text-align: center;
+    }
+
+    .login-center-box .or-container {
+        text-align: center;
+        margin-top: 20px; /* adjust as necessary for spacing */
+        margin-bottom: 20px; /* adjust as necessary for spacing */
+    }
+
+    .login-center-box .button-container {
+        text-align: center;
+    }
+
+    .login-center-box h1 {
+        font-size: 2rem; /* Larger font size for the title */
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .login-center-box .form-control {
+        font-size: 1rem; /* Adjust font size for inputs */
+        padding: .75rem; /* Adjust padding for inputs */
+        margin-bottom: 1rem; /* Space between input fields */
+        width: 100%; /* Set the input width to be 100% of its parent */
+        max-width: 400px; /* Set a max-width to control the width of the input boxes */
+        margin-left: auto; /* Automatically adjust the left margin */
+        margin-right: auto; /* Automatically adjust the right margin */
+        display: block; /* Ensure that input is treated as a block-level element */
+    }
+
+    /* Apply flexbox layout to the container of the inputs */
+    .login-center-box .mb-3 {
+        display: flex; /* Use flexbox to align children */
+        flex-direction: column; /* Stack children vertically */
+        align-items: flex-start; /* Align children to the start (left) */
+        width: 100%; /* The container should take the full available width */
+    }
+
+
+    .login-center-box .form-label {
+        margin-bottom: .5rem;
+        font-size: 1.2rem; /* Adjust label font size if needed */
+        text-align: left; /* Align text to the left */
+    }
+
+    .login-center-box #login-submit {
+        background-color: #17C144; /* Green background color for the Log In button */
+        color: white; /* White text color for the Log In button */
+        border: none; /* No border for the Log In button */
+        padding: 10px 15px;
+        font-size: 1rem;
+        border-radius: 5px; /* Rounded corners for the Log In button */
+        transition: background-color 0.3s; /* Smooth transition for hover effect */
+    }
+
+        .login-center-box #login-submit:hover {
+            background-color: #159a38; /* Slightly darker green on hover for the Log In button */
+        }
+
+        .login-center-box #login-submit:active {
+            background-color: #0e7a2e; /* Even darker green when the button is clicked for the Log In button */
+        }
+
+    .login-center-box #registerSubmit {
+        background-color: #17C144; /* Green background color for the Log In button */
+        color: white; /* White text color for the Log In button */
+        border: none; /* No border for the Log In button */
+        padding: 10px 15px;
+        font-size: 1rem;
+        border-radius: 5px; /* Rounded corners for the Log In button */
+        transition: background-color 0.3s; /* Smooth transition for hover effect */
+    }
+
+        .login-center-box #registerSubmit:hover {
+            background-color: #159a38; /* Slightly darker green on hover for the Log In button */
+        }
+
+        .login-center-box #registerSubmit:active {
+            background-color: #0e7a2e; /* Even darker green when the button is clicked for the Log In button */
+        }
+
+    .login-center-box .google-btn {
+        background-color: #db4437; /* Google red color */
+        color: white; /* White text color for contrast */
+        border: none; /* No border */
+        padding: 10px 15px; /* Padding for the button */
+        font-size: 1rem; /* Font size */
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s; /* Transition for a hover effect */
+    }
+
+        .login-center-box .google-btn:hover {
+            background-color: #c1351d; /* A slightly darker red for hover state */
+        }
+
+        .login-center-box .google-btn:active {
+            background-color: #a12f1a; /* An even darker red for the active state */
+        }
+
+.radio-buttons {
     display: flex;
-    justify-content: center;
-    align-items: start; /* Changed from 'center' to 'start' to move it up */
-    min-height: 90vh; /* Reduced from 100vh to move the box up */
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding-top: 10px; /* You can adjust this value to move the box up */
+    align-items: center;
+    gap: 10px; /* Adjust the gap as needed */
 }
 
-    .center-box .row {
-        max-width: 500px; /* Increased the max-width to make it longer */
-        margin-top: 0; /* You can reduce the top margin to move it up */
-        width: 100%;
-        padding: 20px;
-        border: 1px solid #ccc;
-        background-color: #fff;
+    .radio-buttons .form-check-input {
+        margin-right: 5px; /* Adjust the spacing next to the radio button as needed */
     }
 
-#login-submit, .google-btn {
-    color: white; /* White text for both buttons */
-    font-size: 14px; /* Same font size for both buttons */
-    border-radius: 5px; /* Same border radius for both buttons */
-    padding: 10px 20px; /* Same padding for both buttons */
-    border: none; /* No border for a flat design */
-    font-weight: bold; /* Bold font for both buttons */
-    text-transform: uppercase; /* Uppercase text for both buttons */
-    cursor: pointer; /* Hand cursor on hover */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Same shadow for both */
-}
 
-/* Styles for the login button */
-#login-submit {
-    background-color: #17C144; /* Green background for login button */
-}
-
-    #login-submit:hover {
-        background-color: #15a93d; /* Darker green on hover for login button */
+    /* Additional styling for links */
+    .login-center-box a {
+        color: #0056b3;
+        text-decoration: none;
     }
 
-/* Styles for the Google button */
-.google-btn {
-    background-color: #db4437; /* Google red background for Google button */
-}
+        .login-center-box a:hover {
+            text-decoration: underline;
+        }
 
-    .google-btn:hover {
-        background-color: #c1351d; /* Darker red on hover for Google button */
+    .login-center-box .button-container {
+        text-align: center;
     }
 
-.form-label, .form-control {
-    display: block; /* This makes each element take the full width */
-    width: 100%; /* Ensures they take up 100% of the container's width */
-}
-
-.form-control {
-    margin-top: 0.5rem; /* This adds some space between the label and the input */
+/* Responsiveness for smaller screens */
+@media (max-width: 768px) {
+    .login-center-box {
+        width: 90%; /* Allow the box to be a bit wider on small screens */
+        margin: 1rem auto; /* Less margin on small screens */
+        padding: 1rem; /* Less padding on small screens */
+    }
 }
