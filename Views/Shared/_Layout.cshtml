@@ -1,45 +1,38 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AuroraBrix</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-            <div class="container">
-                <a class="navbar-brand" href="#">AuroraBrix</a>
-                <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/about">About Us</a>
-                        </li>
-                    </ul>
-                    <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search items..." aria-label="Search">
-                    </form>
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/login">Login/Sign Up</a>
-                        </li>
-                    </ul>
+        <nav>
+            <div class="left-nav">
+                <div class="logo">
+                    <h1>AuroraBrix</h1>
                 </div>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About Us</a></li>
+                </ul>
+            </div>
+            <div class="right-nav">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search items...">
+                </div>
+                <ul>
+                    <li><a href="/login">Login/Sign Up</a></li>
+                </ul>
             </div>
         </nav>
     </header>
 
-    <main role="main" class="container">
+    <main>
         @RenderBody()
     </main>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
