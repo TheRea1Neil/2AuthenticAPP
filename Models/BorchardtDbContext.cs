@@ -142,7 +142,6 @@ public partial class BorchardtDbContext : DbContext
         {
             entity.HasKey(e => e.TransactionId);
 
-            entity.Property(e => e.TransactionId).ValueGeneratedNever();
             entity.Property(e => e.Bank).HasMaxLength(50);
             entity.Property(e => e.CountryOfTransaction).HasMaxLength(50);
             entity.Property(e => e.DayOfWeek).HasMaxLength(50);
