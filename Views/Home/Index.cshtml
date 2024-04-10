@@ -23,9 +23,36 @@
             <label><input type="checkbox"> Harry Potter</label>
             <label><input type="checkbox"> Technic</label>
             <label><input type="checkbox"> Vehicle</label>
-            <label><input type="checkbox"> Perion</label>
-            <label><input type="checkbox"> See More</label>
+            <label><input type="checkbox"> Person</label>
+
+            <!-- Hidden categories that will be shown when "See More" is clicked -->
+            <div id="additionalCategories" style="display: none;">
+                <label><input type="checkbox"> Category 1</label>
+                <label><input type="checkbox"> Category 2</label>
+                <!-- Add more hidden categories here -->
+            </div>
+    
+            <!-- Button to toggle more/less categories -->
+            <button onclick="toggleCategories()" id="toggleButton">See More</button>
         </div>
+
+        @section Scripts {
+            <script>
+                function toggleCategories() {
+                    var additionalCategories = document.getElementById('additionalCategories');
+                    var toggleButton = document.getElementById('toggleButton');
+            
+                    if (additionalCategories.style.display === 'none') {
+                        additionalCategories.style.display = 'block';
+                        toggleButton.textContent = 'See Less';
+                    } else {
+                        additionalCategories.style.display = 'none';
+                        toggleButton.textContent = 'See More';
+                    }
+                }
+            </script>
+}
+
 
         <h4>Number of Parts</h4>
         <div class="form-group">
