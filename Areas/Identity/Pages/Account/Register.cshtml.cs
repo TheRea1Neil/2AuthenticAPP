@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using _2AuthenticAPP.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,7 +18,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace _2AuthenticAPP.Areas.Identity.Pages.Account
 {
@@ -29,13 +32,14 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-
+        private readonly BorchardtDbContext _context;
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, 
+            BorchardtDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +47,9 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
+            
+            
         }
 
         [BindProperty]
@@ -55,11 +62,11 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account
         {
             [Required]
             [Display(Name = "First Name")]
-            public string firstName { get; set; }
+            public string FirstName { get; set; }
 
             [Required]
             [Display(Name = "Last Name")]
-            public string lastName { get; set; }
+            public string LastName { get; set; }
 
             [Required]
             [EmailAddress]
@@ -74,7 +81,7 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account
             [Display(Name = "Date of Birth")]
             [DataType(DataType.Date)]
             [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
-            public DateTime Birthday { get; set; }
+            public DateOnly Birthday { get; set; }
 
             [Required]
             [Display(Name = "Country")]
@@ -107,7 +114,7 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, string.IsNullOrEmpty(Input.FirstName) ? Input.Email : Input.FirstName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
@@ -115,6 +122,25 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
                     //you can add the firstname and last name info here
+
+                    var customer = await _context.Customers
+                                .FirstOrDefaultAsync(c => c.Email == Input.Email);
+
+                    if (customer != null)
+                    {
+                        // Update the properties
+                        customer.FirstName = Input.FirstName ?? customer.FirstName;
+                        customer.LastName = Input.LastName ?? customer.LastName;
+                        customer.BirthDate = Input.Birthday;
+                        customer.CountryOfResidence = Input.Country ?? customer.CountryOfResidence;
+                        customer.Gender = Input.Gender ?? customer.Gender;
+                       
+
+                        // Save the changes
+                        await _context.SaveChangesAsync();
+                    }
+
+                    //end update the customer
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
