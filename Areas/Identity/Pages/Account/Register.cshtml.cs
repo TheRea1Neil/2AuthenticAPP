@@ -55,11 +55,11 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account
         {
             [Required]
             [Display(Name = "First Name")]
-            public string firstName { get; set; }
+            public string FirstName { get; set; }
 
             [Required]
             [Display(Name = "Last Name")]
-            public string lastName { get; set; }
+            public string LastName { get; set; }
 
             [Required]
             [EmailAddress]
