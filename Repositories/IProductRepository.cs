@@ -6,6 +6,15 @@ namespace _2AuthenticAPP.Models
     public interface IProductRepository
     {
         IQueryable<Product> Products { get; }
-        // You can add more methods specific to the product entity here
+
+        //wishlist
+        void AddToWishlist(int customerId, int productId);
+        void RemoveFromWishlist(int customerId, int productId);
+        IEnumerable<Product> GetWishlistItems(int customerId);
+
+        //cart
+        void AddToCart(int customerId, int productId);
+        void RemoveFromCart(int customerId, int productId);
+        IEnumerable<Product> GetCartItems(int customerId);
     }
 }

@@ -71,6 +71,65 @@ namespace _2AuthenticAPP.Controllers
             return View(product);
         }
 
+        //Wishlist Items
+        public IActionResult Wishlist(int customerId)
+        {
+            var wishlistedItems = _productRepo.GetWishlistItems(customerId);
+            var viewModel = wishlistedItems.Select(p => new ProductViewModel
+            {
+                // Map the product properties to the view model
+            });
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult AddToWishlist(int customerId, int productId)
+        {
+            _productRepo.AddToWishlist(customerId, productId);
+            return Ok();
+        }
+
+        [HttpPost]
+        public IActionResult RemoveFromWishlist(int customerId, int productId)
+        {
+            _productRepo.RemoveFromWishlist(customerId, productId);
+            return Ok();
+        }
+
+
+        //Cart Items
+        public IActionResult Cart(int customerId)
+        {
+            var CartedItems = _productRepo.GetCartItems(customerId);
+            var viewModel = CartedItems.Select(p => new ProductViewModel
+            {
+                // Map the product properties to the view model
+            });
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult AddToCart(int customerId, int productId)
+        {
+            _productRepo.AddToCart(customerId, productId);
+            return Ok();
+        }
+
+        [HttpPost]
+        public IActionResult RemoveFromCart(int customerId, int productId)
+        {
+            _productRepo.RemoveFromCart(customerId, productId);
+            return Ok();
+        }
+
+
+
+
+
+
+
+
+
         public IActionResult Privacy()
         {
             return View();
