@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
 
 namespace _2AuthenticAPP.Controllers
 {
@@ -13,12 +14,15 @@ namespace _2AuthenticAPP.Controllers
     {
         private readonly IProductRepository _productRepo;
         private readonly BorchardtDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(IProductRepository productRepo, BorchardtDbContext context)
+        public HomeController(IProductRepository productRepo, BorchardtDbContext context, UserManager<IdentityUser> userManager)
         {
             _productRepo = productRepo;
             _context = context;
+            _userManager = userManager;
         }
+       
 
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9)
         {
@@ -36,6 +40,16 @@ namespace _2AuthenticAPP.Controllers
 
             // Pagination logic
             var paginatedProducts = await PaginatedList<ProductViewModel>.CreateAsync(productsQuery, pageNumber, pageSize);
+
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                // Get the IdentityUser object for the logged-in user
+                IdentityUser user = await _userManager.GetUserAsync(User);
+
+                // Query the database to find the customer with the matching email
+                var customer = await _context.Customers
+                                             .FirstOrDefaultAsync(c => c.Email == user.Email);
+            }
 
             return View(paginatedProducts);
         }
