@@ -1,4 +1,5 @@
-﻿@{
+﻿@model PaginatedList<_2AuthenticAPP.Models.ProductViewModel>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -22,9 +23,36 @@
             <label><input type="checkbox"> Harry Potter</label>
             <label><input type="checkbox"> Technic</label>
             <label><input type="checkbox"> Vehicle</label>
-            <label><input type="checkbox"> Perion</label>
-            <label><input type="checkbox"> See More</label>
+            <label><input type="checkbox"> Person</label>
+
+            <!-- Hidden categories that will be shown when "See More" is clicked -->
+            <div id="additionalCategories" style="display: none;">
+                <label><input type="checkbox"> Category 1</label>
+                <label><input type="checkbox"> Category 2</label>
+                <!-- Add more hidden categories here -->
+            </div>
+    
+            <!-- Button to toggle more/less categories -->
+            <button onclick="toggleCategories()" id="toggleButton">See More</button>
         </div>
+
+        @section Scripts {
+            <script>
+                function toggleCategories() {
+                    var additionalCategories = document.getElementById('additionalCategories');
+                    var toggleButton = document.getElementById('toggleButton');
+            
+                    if (additionalCategories.style.display === 'none') {
+                        additionalCategories.style.display = 'block';
+                        toggleButton.textContent = 'See Less';
+                    } else {
+                        additionalCategories.style.display = 'none';
+                        toggleButton.textContent = 'See More';
+                    }
+                }
+            </script>
+}
+
 
         <h4>Number of Parts</h4>
         <div class="form-group">
@@ -58,110 +86,47 @@
     </div>
 
     <div class="product-grid">
-        <h2>Popular Items</h2>
-        <div class="product-row">
-            <div class="product-card">
-                <img src="~/images/product1.jpg" alt="Product 1">
-                <h3>Ferrari F1 Racer 1:8</h3>
-                <div class="rating">
-                    <span>4</span>
-                    <span>&#9733;</span>
-                </div>
-                <div class="price">$65</div>
-                <button class="btn">Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <img src="~/images/product1.jpg" alt="Product 1">
-                <h3>Ferrari F1 Racer 1:8</h3>
-                <div class="rating">
-                    <span>4</span>
-                    <span>&#9733;</span>
-                </div>
-                <div class="price">$65</div>
-                <button class="btn">Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <img src="~/images/product1.jpg" alt="Product 1">
-                <h3>Ferrari F1 Racer 1:8</h3>
-                <div class="rating">
-                    <span>4</span>
-                    <span>&#9733;</span>
-                </div>
-                <div class="price">$65</div>
-                <button class="btn">Add to Cart</button>
+        <div class="grid-header">
+            <h2>Popular Items</h2>
+            <div class="pagination top-pagination">
+                @if (Model.HasPreviousPage)
+                {
+                    <a href="@Url.Action("Index", new { pageNumber = Model.PageIndex - 1 })">Prev</a>
+                }
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <a class="@(i == Model.PageIndex ? "active" : "")" href="@Url.Action("Index", new { pageNumber = i })">@i</a>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <a href="@Url.Action("Index", new { pageNumber = Model.PageIndex + 1 })">Next</a>
+                }
             </div>
         </div>
-        <div class="product-row">
-            <div class="product-card">
-                <img src="~/images/product1.jpg" alt="Product 1">
-                <h3>Ferrari F1 Racer 1:8</h3>
-                <div class="rating">
-                    <span>4</span>
-                    <span>&#9733;</span>
-                </div>
-                <div class="price">$65</div>
-                <button class="btn">Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <img src="~/images/product1.jpg" alt="Product 1">
-                <h3>Ferrari F1 Racer 1:8</h3>
-                <div class="rating">
-                    <span>4</span>
-                    <span>&#9733;</span>
-                </div>
-                <div class="price">$65</div>
-                <button class="btn">Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <img src="~/images/product1.jpg" alt="Product 1">
-                <h3>Ferrari F1 Racer 1:8</h3>
-                <div class="rating">
-                    <span>4</span>
-                    <span>&#9733;</span>
-                </div>
-                <div class="price">$65</div>
-                <button class="btn">Add to Cart</button>
-            </div>
-        </div>
-        <div class="product-row">
-            <div class="product-card">
-                <img src="~/images/product1.jpg" alt="Product 1">
-                <h3>Ferrari F1 Racer 1:8</h3>
-                <div class="rating">
-                    <span>4</span>
-                    <span>&#9733;</span>
-                </div>
-                <div class="price">$65</div>
-                <button class="btn">Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <img src="~/images/product1.jpg" alt="Product 1">
-                <h3>Ferrari F1 Racer 1:8</h3>
-                <div class="rating">
-                    <span>4</span>
-                    <span>&#9733;</span>
-                </div>
-                <div class="price">$65</div>
-                <button class="btn">Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <img src="~/images/product1.jpg" alt="Product 1">
-                <h3>Ferrari F1 Racer 1:8</h3>
-                <div class="rating">
-                    <span>4</span>
-                    <span>&#9733;</span>
-                </div>
-                <div class="price">$65</div>
-                <button class="btn">Add to Cart</button>
-            </div>
-        </div>
-        <!-- Comment: The actual product data will be loaded from the database later -->
 
-        <div class="pagination">
-            <a href="#">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <!-- Add more page numbers -->
+        <div class="product-row">
+            @foreach (var product in Model)
+            {
+                <div class="product-card">
+                    <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-link">
+                        <img src="@product.ImgLink" alt="@product.Name">
+                        <h3 class="product-name">@product.Name</h3>
+                        <div class="rating">
+                            @product.AverageRating?.ToString("0.0")<span class="star">&#9733;</span>
+                        </div>
+                        <div class="product-details">
+                            <div class="price-wrapper">
+                                <span class="price">@product.Price?.ToString("C")</span>
+                            </div>
+                            <button class="btn btn-add-to-cart">Add to Cart</button>
+                        </div>
+                    </a>
+                </div>
+                if ((@Model.IndexOf(product) + 1) % 3 == 0 && @Model.IndexOf(product) + 1 < Model.Count)
+                {
+                    @:</div><div class="product-row">
+                }
+            }
         </div>
     </div>
 </div>
