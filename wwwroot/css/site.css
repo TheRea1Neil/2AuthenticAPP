@@ -19,51 +19,38 @@ header {
     border-radius: 5px;
 }
 
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #000;
+.navbar {
+    background-color: #FFEE49 !important; /* Ensure the navbar background is uniform */
 }
 
-.left-nav {
-    display: flex;
-    align-items: center;
+.navbar-light .navbar-nav .nav-link {
+    background-color: #FFEE49 !important;
 }
 
-.logo h1 {
-    font-size: 24px;
-    margin-right: 20px;
+.navbar-light .navbar-brand {
+    background-color: #FFEE49 !important;
 }
 
-nav ul {
-    list-style: none;
-    display: flex;
+/* Navbar toggler - if it has a different background */
+.navbar-light .navbar-toggler {
+    background-color: #FFEE49 !important;
 }
 
-    nav ul li {
-        margin-right: 20px;
-    }
-
-        nav ul li a {
-            color: #000;
-            text-decoration: none;
-        }
-
-.right-nav {
-    display: flex;
-    align-items: center;
+/* Ensure input fields and buttons match the navbar color scheme */
+.form-control {
+    background-color: #FFFFFF; /* Set the background color for input */
+    /* Other styles */
 }
 
-.search-bar {
-    margin-right: 20px;
+.btn-outline-success {
+    border-color: #FFEE49; /* Match border color to navbar if necessary */
+    color: #000; /* Text color */
 }
 
-    .search-bar input {
-        padding: 5px;
-        border: 1px solid #000;
-        border-radius: 5px;
-    }
+.btn-outline-success:hover {
+    background-color: #FFEE49; /* Button background color on hover */
+    color: #000; /* Text color on hover */
+}
 
 /* Main content styles */
 main {
@@ -176,3 +163,14 @@ main {
             background-color: #007bff;
             color: #fff;
         }
+
+.btn-link {
+    font-size: 0.9em;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.btn-link:hover, .btn-link:focus {
+    text-decoration: underline;
+    color: #0056b3;
+}
