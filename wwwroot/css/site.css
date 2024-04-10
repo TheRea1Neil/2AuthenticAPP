@@ -491,6 +491,24 @@ main {
             background-color: #0e7a2e; /* Even darker green when the button is clicked for the Log In button */
         }
 
+    .login-center-box #registerSubmit {
+        background-color: #17C144; /* Green background color for the Log In button */
+        color: white; /* White text color for the Log In button */
+        border: none; /* No border for the Log In button */
+        padding: 10px 15px;
+        font-size: 1rem;
+        border-radius: 5px; /* Rounded corners for the Log In button */
+        transition: background-color 0.3s; /* Smooth transition for hover effect */
+    }
+
+        .login-center-box #registerSubmit:hover {
+            background-color: #159a38; /* Slightly darker green on hover for the Log In button */
+        }
+
+        .login-center-box #registerSubmit:active {
+            background-color: #0e7a2e; /* Even darker green when the button is clicked for the Log In button */
+        }
+
     .login-center-box .google-btn {
         background-color: #db4437; /* Google red color */
         color: white; /* White text color for contrast */
@@ -508,6 +526,17 @@ main {
         .login-center-box .google-btn:active {
             background-color: #a12f1a; /* An even darker red for the active state */
         }
+
+.radio-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust the gap as needed */
+}
+
+    .radio-buttons .form-check-input {
+        margin-right: 5px; /* Adjust the spacing next to the radio button as needed */
+    }
+
 
     /* Additional styling for links */
     .login-center-box a {
