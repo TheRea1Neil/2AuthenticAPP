@@ -19,6 +19,13 @@ namespace _2AuthenticAPP.Controllers
             return View();
         }
 
+        public IActionResult Details(int id)
+        {
+            // TODO: Retrieve the product details based on the provided id from the database
+            // For now, we'll return the Details view with a hardcoded product ID
+            return View("Details", id);
+        }
+
         public IActionResult Privacy()
         {
             return View();
