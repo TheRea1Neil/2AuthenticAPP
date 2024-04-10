@@ -4,34 +4,71 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace _2AuthenticAPP.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IProductRepository _productRepo;
         private readonly BorchardtDbContext _context;
 
-        public HomeController(BorchardtDbContext context)
+        public HomeController(IProductRepository productRepo, BorchardtDbContext context)
         {
+            _productRepo = productRepo;
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9)
         {
-            // Retrieve all customers from the database
-            var customers = await _context.Customers.ToListAsync();
+            var productsQuery = _productRepo.Products
+                .Select(p => new ProductViewModel
+                {
+                    ProductId = p.ProductId,
+                    Name = p.Name,
+                    Price = p.Price,
+                    ImgLink = p.ImgLink,
+                    AverageRating = _context.LineItems
+                        .Where(li => li.ProductId == p.ProductId)
+                        .Average(li => (int?)li.Rating)
+                });
 
-            // Store the list of customers in a ViewBag to pass to the view
-            ViewBag.Customers = customers;
+            // Pagination logic
+            var paginatedProducts = await PaginatedList<ProductViewModel>.CreateAsync(productsQuery, pageNumber, pageSize);
 
-            return View();
+            return View(paginatedProducts);
         }
 
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            // TODO: Retrieve the product details based on the provided id from the database
-            // For now, we'll return the Details view with a hardcoded product ID
-            return View("Details", id);
+            var product = await _context.Products
+                .Where(p => p.ProductId == id)
+                .Select(p => new ProductViewModel
+                {
+                    ProductId = p.ProductId,
+                    Name = p.Name,
+                    Price = p.Price.HasValue ? Convert.ToDecimal(p.Price.Value) : (decimal?)null, // Ensure conversion to decimal
+                    ImgLink = p.ImgLink,
+                    Description = p.Description,
+                    Year = p.Year.HasValue ? (int)p.Year.Value : (int?)null,
+                    NumParts = p.NumParts.HasValue ? (int)p.NumParts.Value : (int?)null,
+                    PrimaryColor = p.PrimaryColor,
+                    SecondaryColor = p.SecondaryColor,
+                    Category = p.Category
+                }).FirstOrDefaultAsync();
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Calculate average rating
+            product.AverageRating = await _context.LineItems
+                .Where(li => li.ProductId == product.ProductId)
+                .AverageAsync(li => (double?)li.Rating) ?? 0.0;
+
+            return View(product);
         }
 
         public IActionResult Privacy()

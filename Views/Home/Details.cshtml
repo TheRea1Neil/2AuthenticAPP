@@ -1,61 +1,59 @@
-﻿@model int
+﻿@model _2AuthenticAPP.Models.ProductViewModel
 
 @{
-    ViewData["Title"] = "Product Details";
+    ViewData["Title"] = "Product Details: " + Model.Name;
 }
 
-<div class="container">
-    <div class="product-details">
+<div class="product-details-container">
+    <div class="back-link">
+        <a href="javascript:history.back()">&#60; Back</a>
+    </div>
+    <div class="product-details-card">
         <div class="product-header">
-            <div class="back-link">
-                <a href="/">&#8592;</a>
-            </div>
-            <div class="product-title">
-                <h2>Ferrari F1 Racer 1:8</h2>
+            <h2 class="product-title">@Model.Name</h2>
+            <div class="product-price-rating">
                 <div class="rating">
-                    <span>4</span>
-                    <span>&#9733;</span>
+                    <span>@Model.AverageRating?.ToString("0.0")</span>
+                    <span class="star">&#9733;</span>
+                </div>
+                <div class="price">
+                    <span class="price-value">@Model.Price?.ToString("C")</span>
                 </div>
             </div>
         </div>
-        <div class="product-details-card">
-            <div class="product-content">
-                <div class="product-image">
-                    <img src="~/images/product1.jpg" alt="Ferrari F1 Racer 1:8">
+        <div class="product-main-content">
+            <div class="product-specs">
+                <div class="spec-item">
+                    <span class="spec-title">Pieces:</span>
+                    <span class="spec-detail">@Model.NumParts</span>
                 </div>
-                <div class="product-specs">
-                    <div class="price">
-                        <span>$65.00</span>
-                    </div>
-                    <div class="spec-item">
-                        <span>Pieces:</span>
-                        <span>1245</span>
-                    </div>
-                    <div class="spec-item">
-                        <span>Year:</span>
-                        <span>2006</span>
-                    </div>
-                    <div class="spec-item">
-                        <span>Category:</span>
-                        <span>Car-Vehicle</span>
-                    </div>
-                    <div class="spec-item">
-                        <span>Primary Color:</span>
-                        <span>Red</span>
-                    </div>
-                    <div class="spec-item">
-                        <span>Secondary Color:</span>
-                        <span>Black</span>
-                    </div>
-                    <div class="actions">
-                        <button class="btn btn-add-to-cart">Add to Cart</button>
-                        <button class="btn btn-add-to-wishlist">Add to Wish List</button>
-                    </div>
+                <div class="spec-item">
+                    <span class="spec-title">Year:</span>
+                    <span class="spec-detail">@Model.Year</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-title">Category:</span>
+                    <span class="spec-detail">@Model.Category</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-title">Primary Color:</span>
+                    <span class="spec-detail">@Model.PrimaryColor</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-title">Secondary Color:</span>
+                    <span class="spec-detail">@Model.SecondaryColor</span>
                 </div>
             </div>
             <div class="product-description">
-                <p>At 19 inches, almost 1,000 pieces, this is the biggest official Ferrari F1 racer ever built with LEGO bricks! Incredible real-world features include a removable front spoiler and tires that really steer. Packed with realistic Ferrari details! Working steering system turns front spoiler to removable Measures 20" (52cm) long and 7" (8cm) wide! Time required: 7 hours!</p>
+                <p>@Model.Description</p>
             </div>
+            <div class="actions">
+                <button class="btn btn-add-to-cart">Add to Cart</button>
+                <button class="btn btn-add-to-wishlist">Add to Wish List</button>
+            </div>
+        </div>
+        <div class="product-image">
+            <img src="@Model.ImgLink" alt="@Model.Name">
         </div>
     </div>
 </div>
