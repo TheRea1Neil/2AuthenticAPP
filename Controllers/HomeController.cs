@@ -28,6 +28,12 @@ namespace _2AuthenticAPP.Controllers
         {
             return View();
         }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+
         public IActionResult About()
         {
             return View();
