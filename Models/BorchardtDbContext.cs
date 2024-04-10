@@ -37,6 +37,8 @@ public partial class BorchardtDbContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
+    public virtual DbSet<WishListItem> WishListItems { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=tcp:borchardtserver.database.windows.net,1433;Initial Catalog=BorchardtDB;Persist Security Info=False;User ID=borchardt;Password=ilike5beans!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
@@ -124,8 +126,8 @@ public partial class BorchardtDbContext : DbContext
         {
             entity.HasKey(e => e.CustomerId).HasName("PK_INTEX W24 Dataset.xlsx - Customers");
 
-            entity.Property(e => e.CustomerId).ValueGeneratedNever();
             entity.Property(e => e.CountryOfResidence).HasMaxLength(50);
+            entity.Property(e => e.Email).HasMaxLength(250);
             entity.Property(e => e.FirstName).HasMaxLength(50);
             entity.Property(e => e.Gender).HasMaxLength(50);
             entity.Property(e => e.LastName).HasMaxLength(50);
@@ -158,6 +160,11 @@ public partial class BorchardtDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.PrimaryColor).HasMaxLength(50);
             entity.Property(e => e.SecondaryColor).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<WishListItem>(entity =>
+        {
+            entity.HasKey(e => new { e.CustomerId, e.ProductId });
         });
 
         OnModelCreatingPartial(modelBuilder);
