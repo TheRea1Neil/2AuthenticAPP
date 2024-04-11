@@ -17,16 +17,19 @@
                 <ul>
                     <li><a href="/">Home</a></li>
                     <li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About Us</a></li>
+                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="OrderHistory">Order History</a></li>
+                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cart">Cart</a></li>
                 </ul>
             </div>
             <div class="right-nav">
                 <div class="search-bar">
-                    <input type="text" placeholder="Search items...">
+                    <input type="text" class="search-input" placeholder="Search items..." />
                 </div>
                 <ul>
                     <partial name="_LoginPartial" />
                 </ul>
             </div>
+
         </nav>
     </header>
 

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<_2AuthenticAPP.Models.Order>
+
+@{
+    ViewData["Title"] = "Order History";
+}
+
+<div class="container">
+    <h2>Order History</h2>
+
+    @if (Model.Count() == 0)
+    {
+        <p>You have no order history.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Total Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.TransactionId</td>
+                        <td>@order.Date</td>
+                        <td>@order.Amount.Value.ToString("C")</td>
+                        <td>
+                            <a href="@Url.Action("OrderDetails", "Home", new { id = order.TransactionId })" class="btn btn-primary">View Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
