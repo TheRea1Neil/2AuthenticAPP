@@ -1,22 +1,22 @@
-﻿@model List<_2AuthenticAPP.Models.ProductViewModel>
+﻿@model IEnumerable<_2AuthenticAPP.Models.ProductViewModel>
 
 @{
-    ViewData["Title"] = "Wishlist";
+    ViewData["Title"] = "Cart";
 }
 
 <div class="container">
     <h2>Your Cart</h2>
 
-    @if (Model.Count == 0)
+    @if (Model.Count() == 0)
     {
         <p>Your cart is empty.</p>
     }
     else
     {
-        <div class="wishlist-items">
+        <div class="cart-items">
             @foreach (var item in Model)
             {
-                <div class="wishlist-item">
+                <div class="cart-item">
                     <div class="item-image">
                         <img src="@item.ImgLink" alt="@item.Name">
                     </div>
@@ -29,7 +29,7 @@
                         <p>Secondary Color: @item.SecondaryColor</p>
                     </div>
                     <div class="item-actions">
-                        <span class="price">@item.Price?.ToString("C")</span>
+                        <span class="price">@item.Price.Value.ToString("C")</span>
                         <button class="btn btn-remove" data-product-id="@item.ProductId">Remove</button>
                     </div>
                 </div>

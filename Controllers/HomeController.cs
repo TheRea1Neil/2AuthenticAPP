@@ -112,28 +112,86 @@ namespace _2AuthenticAPP.Controllers
 
 
         //Cart Items
-        public IActionResult Cart(int customerId)
+        public async Task<IActionResult> Cart()
         {
-            var CartedItems = _productRepo.GetCartItems(customerId);
-            var viewModel = CartedItems.Select(p => new ProductViewModel
+            if (User.Identity.IsAuthenticated)
             {
-                // Map the product properties to the view model
-            });
-            return View(viewModel);
+                // Get the IdentityUser object for the logged-in user
+                var user = await _userManager.GetUserAsync(User);
+
+                // Query the database to find the customer with the matching email
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    var cartedItems = _productRepo.GetCartItems(customer.CustomerId);
+                    var viewModel = cartedItems.Select(p => new ProductViewModel
+                    {
+                        ProductId = p.ProductId,
+                        Name = p.Name,
+                        Price = p.Price,
+                        ImgLink = p.ImgLink,
+                        Description = p.Description,
+                        Year = p.Year,
+                        NumParts = p.NumParts,
+                        PrimaryColor = p.PrimaryColor,
+                        SecondaryColor = p.SecondaryColor,
+                        Category = p.Category
+                    });
+                    return View(viewModel);
+                }
+            }
+
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpPost]
-        public IActionResult AddToCart(int customerId, int productId)
+        public async Task<IActionResult> AddToCart(int productId)
         {
-            _productRepo.AddToCart(customerId, productId);
-            return Ok();
+            if (User.Identity.IsAuthenticated)
+            {
+                // Get the IdentityUser object for the logged-in user
+                var user = await _userManager.GetUserAsync(User);
+
+                // Query the database to find the customer with the matching email
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    // Convert CustomerId from long to int
+                    long customerId = customer.CustomerId;
+
+                    // Add the product to the customer's cart
+                    _productRepo.AddToCart(customerId, productId);
+
+                    // Redirect to the cart page
+                    return RedirectToAction("Cart");
+                }
+            }
+
+            return Unauthorized();
         }
 
         [HttpPost]
-        public IActionResult RemoveFromCart(int customerId, int productId)
+        public async Task<IActionResult> RemoveFromCart(int productId)
         {
-            _productRepo.RemoveFromCart(customerId, productId);
-            return Ok();
+            if (User.Identity.IsAuthenticated)
+            {
+                // Get the IdentityUser object for the logged-in user
+                var user = await _userManager.GetUserAsync(User);
+
+                // Query the database to find the customer with the matching email
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    // Remove the product from the customer's cart
+                    _productRepo.RemoveFromCart(customer.CustomerId, productId);
+                    return Ok();
+                }
+            }
+
+            return Unauthorized();
         }
 
 
