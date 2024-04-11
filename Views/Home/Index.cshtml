@@ -6,7 +6,7 @@
 
 <div class="container">
     <div class="filter-section">
-        <h4>Filter</h4>
+        <h3>Filter</h3>
         <div class="form-group">
             <select>
                 <option value="">Popular</option>
@@ -16,10 +16,10 @@
             </select>
         </div>
 
-        <h4>Category</h4>
+        <h3>Category</h3>
         <div class="form-group">
           <!-- Initially visible categories -->
-          <div id="initialCategories">
+          <div id="initialCategories" class="form-group">
             @for (int i = 0; i < Math.Min(5, categories.Count); i++)
             {
               <label>
@@ -42,27 +42,7 @@
           <button onclick="toggleCategories()" id="toggleButton">See More</button>
         </div>
 
-
-        @section Scripts {
-            <script>
-              function toggleCategories() {
-                var additionalCategories = document.getElementById('additionalCategories');
-                var toggleButton = document.getElementById('toggleButton');
-
-                // Check the current state and toggle accordingly
-                if (additionalCategories.style.display == 'none') {
-                  additionalCategories.style.display = 'block'; // Show the additional categories
-                  toggleButton.textContent = 'See Less';        // Change button text to "See Less"
-                } else {
-                  additionalCategories.style.display = 'none';  // Hide the additional categories
-                  toggleButton.textContent = 'See More';        // Change button text back to "See More"
-                }
-              }
-            </script>
-        }
-
-
-        <h4>Number of Parts</h4>
+        <h3>Number of Parts</h3>
         <div class="form-group">
             <label><input type="radio" name="parts"> 0 - 99</label>
             <label><input type="radio" name="parts"> 100 - 499</label>
@@ -70,25 +50,31 @@
             <label><input type="radio" name="parts"> 1000+</label>
         </div>
 
-        <h4>Price</h4>
+        <h3>Price</h3>
         <div class="form-group">
             <label>Min: <input type="number" min="0" step="1"></label>
             <label>Max: <input type="number" min="0" step="1"></label>
         </div>
 
-        <h4>Primary Color</h4>
+        <h3>Primary Color</h3>
         <div class="form-group">
-            <select>
-                <option value="">Select Color</option>
-                <!-- Add more color options -->
+            <select id="primaryColorFilter">
+                <option value="">Select</option>
+                @foreach (var color in ViewBag.PrimaryColors)
+                {
+                    <option value="@color">@color</option>
+                }
             </select>
         </div>
 
-        <h4>Secondary Color</h4>
+        <h3>Secondary Color</h3>
         <div class="form-group">
-            <select>
-                <option value="">Select Color</option>
-                <!-- Add more color options -->
+            <select id="secondaryColorFilter">
+                <option value="">Select</option>
+                @foreach (var color in ViewBag.SecondaryColors)
+                {
+                    <option value="@color">@color</option>
+                }
             </select>
         </div>
     </div>
@@ -138,3 +124,34 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+            <script>
+              // This function will run immediately after the script is loaded
+              (function() {
+                // Check the initial state of the additional categories and set the button text
+                var additionalCategories = document.getElementById('additionalCategories');
+                var toggleButton = document.getElementById('toggleButton');
+                if (additionalCategories.style.display === 'none') {
+                  toggleButton.textContent = 'See More';
+                } else {
+                  additionalCategories.style.display = 'none'; // Hide additional categories by default
+                  toggleButton.textContent = 'See More'; // Set the correct initial button text
+                }
+              })();
+
+              function toggleCategories() {
+                var additionalCategories = document.getElementById('additionalCategories');
+                var toggleButton = document.getElementById('toggleButton');
+
+                // Check the current state and toggle accordingly
+                if (additionalCategories.style.display === 'none') {
+                  additionalCategories.style.display = 'block'; // Show the additional categories
+                  toggleButton.textContent = 'See Less'; // Change button text to "See Less"
+                } else {
+                  additionalCategories.style.display = 'none'; // Hide the additional categories
+                  toggleButton.textContent = 'See More'; // Change button text back to "See More"
+                }
+              }
+            </script>
+        }

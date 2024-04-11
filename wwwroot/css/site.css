@@ -147,6 +147,7 @@ main {
 }
 
 .filter-section {
+    display: block;
     flex: 0 0 200px;
     margin-right: 20px;
     background-color: #fff;
@@ -156,7 +157,7 @@ main {
     align-self: flex-start;
 }
 
-    .filter-section h4 {
+    .filter-section h3 {
         margin-bottom: 10px;
     }
 
@@ -165,7 +166,19 @@ main {
     }
 
     .filter-section label {
+        display: block;
         margin-bottom: 5px;
+    }
+
+    /* Add classes to your input and label for better control */
+    .filter-section .checkbox-label {
+        display: block; /* Ensure each label is on its own line */
+        margin-bottom: 5px; /* Provide some space between the items */
+    }
+
+    .filter-section .checkbox-input {
+        display: block; /* This is typically unnecessary, but added for completeness */
+        margin-bottom: 5px; /* Provide some space after the checkbox if needed */
     }
 
     .filter-section select,

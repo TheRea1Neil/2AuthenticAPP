@@ -67,6 +67,22 @@ namespace _2AuthenticAPP.Controllers
 
             ViewBag.Categories = uniqueCategories;
 
+            // Fetch and process primary colors
+            var allPrimaryColors = await _context.Products
+                .Select(p => p.PrimaryColor)
+                .Distinct() // Get distinct values
+                .ToListAsync();
+
+            ViewBag.PrimaryColors = allPrimaryColors;
+
+            // Fetch and process secondary colors
+            var allSecondaryColors = await _context.Products
+                .Select(p => p.SecondaryColor)
+                .Distinct() // Get distinct values
+                .ToListAsync();
+
+            ViewBag.SecondaryColors = allSecondaryColors;
+
             return View(paginatedProducts);
         }
 
