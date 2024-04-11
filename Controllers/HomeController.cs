@@ -53,6 +53,19 @@ namespace _2AuthenticAPP.Controllers
                                              .FirstOrDefaultAsync(c => c.Email == user.Email);
             }
 
+            // Assuming '_context' is your DbContext and 'Products' is your DbSet<Product>
+            var allCategories = await _context.Products
+                .Select(p => p.Category) // Select the Categories column
+                .ToListAsync(); // Execute the query and get the results as a List
+
+            var uniqueCategories = allCategories
+                .SelectMany(c => c.Split('-')) // Split each category string into individual categories
+                .Select(c => c.Trim()) // Trim whitespace
+                .Distinct() // Get distinct categories
+                .ToList(); // Convert to List
+
+            ViewBag.Categories = uniqueCategories;
+
             return View(paginatedProducts);
         }
 
