@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using _2AuthenticAPP.Data;
 using _2AuthenticAPP.Models;
+using _2AuthenticAPP.Models.ViewModels;
 
 namespace _2AuthenticAPP.Controllers
 {
@@ -108,6 +109,7 @@ namespace _2AuthenticAPP.Controllers
 
             var customer = await _context.Customers
                 .FirstOrDefaultAsync(m => m.CustomerId == id);
+
             if (customer == null)
             {
                 return NotFound();
@@ -129,6 +131,40 @@ namespace _2AuthenticAPP.Controllers
         private bool CustomerExists(int id)
         {
             return _context.Customers.Any(e => e.CustomerId == id);
+        }
+
+        public async Task<IActionResult> Orders(string searchString, bool showFraudOnly = false, int? pageNumber = 1)
+        {
+            int pageSize = 10;
+
+            var orders = _context.Orders
+                .Include(o => o.Customer) // Include the Customer navigation property
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                orders = orders.Where(o => o.TransactionId.ToString().Contains(searchString) ||
+                                           o.Customer.Email.Contains(searchString));
+            }
+
+            if (showFraudOnly)
+            {
+                orders = orders.Where(o => o.Fraud == 1);
+            }
+
+            var totalOrders = await orders.CountAsync();
+            var paginatedOrders = await orders.Skip((pageNumber.Value - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var viewModel = new OrderViewModel
+            {
+                Orders = paginatedOrders,
+                SearchString = searchString,
+                ShowFraudOnly = showFraudOnly,
+                PageNumber = pageNumber.Value,
+                TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize)
+            };
+
+            return View(viewModel);
         }
         // Add more admin-specific actions as needed
     }
