@@ -54,15 +54,16 @@ namespace _2AuthenticAPP.Controllers
             }
 
             // Assuming '_context' is your DbContext and 'Products' is your DbSet<Product>
+            // This part of your code fetches and processes the categories.
             var allCategories = await _context.Products
-                .Select(p => p.Category) // Select the Categories column
-                .ToListAsync(); // Execute the query and get the results as a List
+                              .Select(p => p.Category)
+                              .ToListAsync(); // Make sure 'Category' is the correct property name.
 
             var uniqueCategories = allCategories
-                .SelectMany(c => c.Split('-')) // Split each category string into individual categories
-                .Select(c => c.Trim()) // Trim whitespace
-                .Distinct() // Get distinct categories
-                .ToList(); // Convert to List
+                              .SelectMany(c => c.Split('-')) // This assumes categories are pipe-separated.
+                              .Select(c => c.Trim())
+                              .Distinct()
+                              .ToList();
 
             ViewBag.Categories = uniqueCategories;
 
