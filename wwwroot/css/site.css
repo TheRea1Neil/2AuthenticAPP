@@ -26,15 +26,23 @@ nav {
     color: #000;
 }
 
+.nav-container { /* Assuming you have a div with this class around your nav */
+    width: 100%; /* Or set to max-width if required */
+}
+
 .navbar-nav {
     display: flex;
     align-items: center;
 }
 
 .nav-item {
-    display: flex;
-    align-items: center;
+    margin-right: 10px; /* Adjust this value as needed for spacing */
+    white-space: nowrap; /* Prevent the text inside from wrapping */
 }
+
+    .nav-item:last-child {
+        margin-right: 0;
+    }
 
 .form-inline {
     display: flex;
@@ -44,7 +52,28 @@ nav {
 .left-nav {
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
 }
+
+    /* Ensures the list items are inline and aligned */
+    .left-nav ul {
+        display: flex; /* Align items in a row */
+        padding-left: 0; /* Removes padding from the list */
+        margin: 0; /* Removes margin from the list */
+        align-items: center; /* Vertically center the items in the list */
+    }
+
+    /* Adjusts the spacing between the list items */
+    .left-nav .nav-link {
+        margin-right: 15px; /* Adds space to the right of each item */
+        white-space: nowrap; /* Prevents the links from wrapping */
+    }
+
+        /* Removes the right margin from the last item to avoid unnecessary space */
+        .left-nav .nav-link:last-child {
+            margin-right: 0;
+        }
+
 
 .logo h1 {
     font-size: 24px;
@@ -52,13 +81,26 @@ nav {
 }
 
 nav ul {
-    list-style: none;
     display: flex;
+    flex-wrap: nowrap;
+    padding-left: 0; /* Reset padding if it's not needed */
+    margin: 0; /* Reset margin to ensure maximum space usage */
+    align-items: center; /* Center items vertically */
+    list-style: none;
 }
 
     nav ul li {
-        margin-right: 20px;
+        margin-right: 20px; /* Adjust the spacing between the list items */
     }
+
+        nav ul li:last-child {
+            margin-right: 0; /* Remove margin for the last item to prevent extra spacing */
+        }
+
+.nav-link {
+    display: inline-block;
+    padding: 8px 10px; /* Adjust padding to control the spacing around text */
+}
 
         nav ul li a {
             color: #000;
@@ -67,22 +109,33 @@ nav ul {
 
 .right-nav {
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    width: 100%;
+}
+
+.search-container {
+    flex-grow: 1; /* Remove this if you don't want the search bar to grow */
+    display: flex;
+    justify-content: center; /* This will center the search input */
+    padding: 0 10px; /* Adjust the left and right padding to suit your design */
 }
 
 .search-bar {
     margin-right: 20px;
-    width: 100%; /* This will make the container take the full width available */
-    max-width: 1000px; /* This will limit the container's max width */
+    /* width: 100%; this may not be necessary if .right-nav is set to grow */
+    max-width: 1000px; /* Set the maximum width of the search bar */
+    /* If .search-bar is the container, you may need to ensure it's allowed to grow */
+    flex-grow: 1;
 }
 
 .search-input {
     width: 100%; /* This will make the input inside the container take up the full width */
+    max-width: 700px; /* Adjust this value to control the maximum size of the search bar */
     padding: 5px;
     border: 1px solid #000;
     border-radius: 5px;
 }
-
 
 /* Main content styles */
 main {
