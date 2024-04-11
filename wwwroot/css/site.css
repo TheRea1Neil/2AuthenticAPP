@@ -509,6 +509,24 @@ main {
             background-color: #0e7a2e; /* Even darker green when the button is clicked for the Log In button */
         }
 
+    .login-center-box #update-profile-button {
+        background-color: #17C144; /* Green background color for the Log In button */
+        color: white; /* White text color for the Log In button */
+        border: none; /* No border for the Log In button */
+        padding: 10px 15px;
+        font-size: 1rem;
+        border-radius: 5px; /* Rounded corners for the Log In button */
+        transition: background-color 0.3s; /* Smooth transition for hover effect */
+    }
+
+        .login-center-box #update-profile-button:hover {
+            background-color: #159a38; /* Slightly darker green on hover for the Log In button */
+        }
+
+        .login-center-box #update-profile-button:active {
+            background-color: #0e7a2e; /* Even darker green when the button is clicked for the Log In button */
+        }
+
     .login-center-box .google-btn {
         background-color: #db4437; /* Google red color */
         color: white; /* White text color for contrast */

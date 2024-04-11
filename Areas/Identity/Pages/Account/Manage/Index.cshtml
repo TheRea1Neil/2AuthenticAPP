@@ -10,11 +10,9 @@
     <div class="col-md-6">
         <form id="profile-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
         </form>
     </div>
 </div>
-
 
 
 <div class="login-center-box">
@@ -28,35 +26,39 @@
                     <input asp-for="Username" class="form-control" disabled />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">First Name</label>
-                    <input class="form-control" />
+                    <label asp-for="Customer.FirstName" class="form-label">First Name</label>
+                    <input asp-for="Customer.FirstName" class="form-control" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Last Name</label>
-                    <input class="form-control" />
+                    <label asp-for="Customer.LastName" class="form-label">Last Name</label>
+                    <input asp-for="Customer.LastName" class="form-control" />
                 </div>
                 <div class="form-group mb-3">
-                    <label class="form-label">Gender</label>
+                    <label asp-for="Customer.Gender" class="form-label">Gender</label>
                     <div class="radio-buttons">
-                        <input type="radio" id="gender_male" value="M" class="form-check-input" />
-                        <label class="form-check-label" for="gender_male">Male</label>
-                        <input type="radio" id="gender_female" value="F" class="form-check-input" />
-                        <label class="form-check-label" for="gender_female">Female</label>
+                        <input asp-for="Customer.Gender" type="radio" id="gender_male" value="M" class="form-check-input" />
+                        <label asp-for="Customer.Gender" class="form-check-label" for="gender_male">Male</label>
+                        <input asp-for="Customer.Gender" type="radio" id="gender_female" value="F" class="form-check-input" />
+                        <label asp-for="Customer.Gender" class="form-check-label" for="gender_female">Female</label>
                     </div>
                     <span class="text-danger"></span>
                 </div>
                 <br/>
                 <div class="form-floating mb-3">
-                    <label class="form-label">Date of Birth</label>
-                    <input type="date" class="form-control" aria-required="true" />
+                    <label asp-for="Customer.BirthDate" class="form-label">Date of Birth</label>
+                    <input asp-for="Customer.BirthDate" type="date" class="form-control" aria-required="true" />
                     <span class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Country</label>
-                    <input class="form-control" />
+                    <label asp-for="Customer.CountryOfResidence" class="form-label">Country</label>
+                    <input asp-for="Customer.CountryOfResidence" class="form-control" />
                 </div>
-                <button id="update-profile-button" type="submit" class="btn btn-primary">Update Information</button>
+                <div class="button-container">
+                    <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Update Information</button>
+                </div>
             </form>
+            <br/>
+            <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Manage Two-factor Authentication</a>
         </div>
     </div>
 </div>
