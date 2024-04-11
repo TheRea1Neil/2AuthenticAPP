@@ -96,10 +96,11 @@ namespace _2AuthenticAPP.Controllers
             });
             return View(viewModel);
         }
-
+        [Authorize]
         [HttpPost]
         public IActionResult AddToWishlist(int customerId, int productId)
         {
+
             _productRepo.AddToWishlist(customerId, productId);
             return Ok();
         }
@@ -112,7 +113,7 @@ namespace _2AuthenticAPP.Controllers
         }
 
 
-        //Cart Items
+    //Cart Items
         public async Task<IActionResult> Cart()
         {
             if (User.Identity.IsAuthenticated)
@@ -147,9 +148,11 @@ namespace _2AuthenticAPP.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddToCart(int productId)
         {
+
             if (User.Identity.IsAuthenticated)
             {
                 // Get the IdentityUser object for the logged-in user
@@ -230,6 +233,80 @@ namespace _2AuthenticAPP.Controllers
             }
 
             return Unauthorized();
+        }
+
+    //Checkout Stuff
+        public async Task<IActionResult> Checkout()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    var cartedItems = _productRepo.GetCartItems(customer.CustomerId);
+
+                    var checkoutViewModel = new CheckoutViewModel
+                    {
+                        CartItems = cartedItems,
+                        TotalAmount = cartedItems.Sum(item => item.Price.Value * item.Qty)
+                    };
+
+                    return View(checkoutViewModel);
+                }
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PlaceOrder()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    var cartedItems = _productRepo.GetCartItems(customer.CustomerId);
+
+                    var order = new Order
+                    {
+                        CustomerId = customer.CustomerId,
+                        Date = DateOnly.FromDateTime(DateTime.Now),
+                        DayOfWeek = DateTime.Now.DayOfWeek.ToString(),
+                        Time = (byte)DateTime.Now.Hour,
+                        EntryMode = "Online",
+                        Amount = (double?)cartedItems.Sum(item => item.Price.Value * item.Qty),
+                        TypeOfTransaction = "Purchase",
+                        CountryOfTransaction = "USA", // Set the appropriate country
+                        ShippingAddress = "", // Set the shipping address
+                        Bank = "", // Set the bank information
+                        TypeOfCard = "", // Set the type of card
+                        Fraud = 0 // Set the fraud flag
+                    };
+
+                    _context.Orders.Add(order);
+                    _context.SaveChanges();
+
+                    // Clear the user's cart after placing the order
+                    foreach (var item in cartedItems)
+                    {
+                        _productRepo.RemoveFromCart(customer.CustomerId, item.ProductId);
+                    }
+
+                    return RedirectToAction("OrderSuccess");
+                }
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
+
+        public IActionResult OrderSuccess()
+        {
+            return View();
         }
 
 

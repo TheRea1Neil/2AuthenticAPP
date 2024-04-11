@@ -6,9 +6,11 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using _2AuthenticAPP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
 {
@@ -16,13 +18,16 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly BorchardtDbContext _context;
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
+            BorchardtDbContext context,
             SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         /// <summary>
@@ -49,6 +54,10 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        /// 
+        [BindProperty]
+        public Customer Customer { get; set; }
+
         public class InputModel
         {
             /// <summary>
@@ -82,6 +91,17 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
             }
 
             await LoadAsync(user);
+
+          
+            string userEmail = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+                if (!string.IsNullOrEmpty(userEmail))
+                {
+                    Customer = await _context.Customers
+                                             .FirstOrDefaultAsync(c => c.Email == userEmail);
+                }
+            
+
             return Page();
         }
 
@@ -95,10 +115,11 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user);
+                await LoadAsync(user); // Reloads user data if ModelState is invalid
                 return Page();
             }
 
+            // Update the user's phone number if it has changed
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -110,9 +131,31 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
-            return RedirectToPage();
+            // Fetch the customer object based on the user's email
+         
+            Customer customerToUpdate = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+            if (customerToUpdate != null)
+            {
+                // Update customer properties with the submitted values
+                customerToUpdate.FirstName = Customer.FirstName; // Example: update FirstName
+                customerToUpdate.LastName = Customer.LastName;                                                 // Similarly, update other properties of customerToUpdate as needed
+                customerToUpdate.Gender = Customer.Gender;
+                customerToUpdate.BirthDate = Customer.BirthDate;
+                customerToUpdate.CountryOfResidence = Customer.CountryOfResidence;
+
+                // Save changes
+                await _context.SaveChangesAsync();
+
+                StatusMessage = "Your profile has been updated";
+                return RedirectToPage();
+            }
+            else
+            {
+                StatusMessage = "Customer not found.";
+                return RedirectToPage();
+            }
         }
+
     }
 }
