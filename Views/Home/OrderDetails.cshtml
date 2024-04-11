@@ -1,0 +1,35 @@
+﻿@model _2AuthenticAPP.Models.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container">
+    <h2>Order Details</h2>
+
+    <div class="order-info">
+        <p>Order ID: @Model.TransactionId</p>
+        <p>Date: @Model.Date</p>
+        <p>Total Amount: @Model.Amount.Value.ToString("C")</p>
+    </div>
+
+    <div class="order-items">
+        @foreach (var lineItem in Model.LineItems)
+        {
+            <div class="order-item">
+                <div class="item-details">
+                    <h3>@lineItem.Product.Name</h3>
+                    <p>Quantity: @lineItem.Qty</p>
+                    <p>Price: @lineItem.Product.Price.Value.ToString("C")</p>
+                </div>
+                <div class="item-actions">
+                    <a href="@Url.Action("ProductDetails", "Home", new { id = lineItem.Product.ProductId })" class="btn btn-primary">View Product</a>
+                    <form asp-action="AddToCart" method="post">
+                        <input type="hidden" name="productId" value="@lineItem.Product.ProductId" />
+                        <button type="submit" class="btn btn-primary">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>

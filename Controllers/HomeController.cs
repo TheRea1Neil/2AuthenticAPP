@@ -233,6 +233,50 @@ namespace _2AuthenticAPP.Controllers
         }
 
 
+    //Order History Stuff
+        public async Task<IActionResult> OrderHistory()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    var orders = await _context.Orders
+                        .Where(o => o.CustomerId == customer.CustomerId)
+                        .ToListAsync();
+
+                    return View(orders);
+                }
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
+
+        public async Task<IActionResult> OrderDetails(int id)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    var order = await _context.Orders
+                        .Include(o => o.LineItems)
+                            .ThenInclude(li => li.Product)
+                        .FirstOrDefaultAsync(o => o.TransactionId == id && o.CustomerId == customer.CustomerId);
+
+                    if (order != null)
+                    {
+                        return View(order);
+                    }
+                }
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
 
 
 
