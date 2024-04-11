@@ -129,6 +129,25 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            // Now, update the Customer object.
+            // Assuming the Customer object is already loaded from OnGetAsync or elsewhere.
+            if (Customer != null)
+            {
+                var customerInDb = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+                if (customerInDb != null)
+                {
+                    customerInDb.FirstName = Customer.FirstName; // Example of updating the first name
+                    customerInDb.LastName = Customer.LastName;
+                    customerInDb.Gender = Customer.Gender;
+                    customerInDb.BirthDate = Customer.BirthDate;
+                    customerInDb.CountryOfResidence = Customer.CountryOfResidence;
+                    // Update other fields of customerInDb as necessary
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
