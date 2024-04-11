@@ -55,6 +55,7 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         /// 
+        [BindProperty]
         public Customer Customer { get; set; }
 
         public class InputModel
@@ -114,10 +115,11 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user);
+                await LoadAsync(user); // Reloads user data if ModelState is invalid
                 return Page();
             }
 
+            // Update the user's phone number if it has changed
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -129,28 +131,31 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            // Now, update the Customer object.
-            // Assuming the Customer object is already loaded from OnGetAsync or elsewhere.
-            if (Customer != null)
+            // Fetch the customer object based on the user's email
+         
+            Customer customerToUpdate = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+            if (customerToUpdate != null)
             {
-                var customerInDb = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
-                if (customerInDb != null)
-                {
-                    customerInDb.FirstName = Customer.FirstName; // Example of updating the first name
-                    customerInDb.LastName = Customer.LastName;
-                    customerInDb.Gender = Customer.Gender;
-                    customerInDb.BirthDate = Customer.BirthDate;
-                    customerInDb.CountryOfResidence = Customer.CountryOfResidence;
-                    // Update other fields of customerInDb as necessary
+                // Update customer properties with the submitted values
+                customerToUpdate.FirstName = Customer.FirstName; // Example: update FirstName
+                customerToUpdate.LastName = Customer.LastName;                                                 // Similarly, update other properties of customerToUpdate as needed
+                customerToUpdate.Gender = Customer.Gender;
+                customerToUpdate.BirthDate = Customer.BirthDate;
+                customerToUpdate.CountryOfResidence = Customer.CountryOfResidence;
 
-                    await _context.SaveChangesAsync();
-                }
+                // Save changes
+                await _context.SaveChangesAsync();
+
+                StatusMessage = "Your profile has been updated";
+                return RedirectToPage();
             }
-
-
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
-            return RedirectToPage();
+            else
+            {
+                StatusMessage = "Customer not found.";
+                return RedirectToPage();
+            }
         }
+
     }
 }
