@@ -5,23 +5,58 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
+@* <h3>@ViewData["Title"]</h3> *@
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
     <div class="col-md-6">
         <form id="profile-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                <label asp-for="Username" class="form-label"></label>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
+    </div>
+</div>
+
+
+<div class="login-center-box">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Account Information</h1>
+            <form method="post">
+                <!-- Existing information display here, possibly with input fields to edit -->
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label">Email</label>
+                    <input asp-for="Username" class="form-control" disabled />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">First Name</label>
+                    <input class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Last Name</label>
+                    <input class="form-control" />
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Gender</label>
+                    <div class="radio-buttons">
+                        <input type="radio" id="gender_male" value="Male" class="form-check-input" />
+                        <label class="form-check-label" for="gender_male">Male</label>
+                        <input type="radio" id="gender_female" value="Female" class="form-check-input" />
+                        <label class="form-check-label" for="gender_female">Female</label>
+                    </div>
+                    <span class="text-danger"></span>
+                </div>
+                <br/>
+                <div class="form-floating mb-3">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" aria-required="true" />
+                    <span class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Country</label>
+                    <input class="form-control" />
+                </div>
+                <button id="update-profile-button" type="submit" class="btn btn-primary">Update Information</button>
+            </form>
+        </div>
     </div>
 </div>
 
