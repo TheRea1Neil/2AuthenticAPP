@@ -24,7 +24,7 @@
                 </ul>
             </div>
             <div class="right-nav">
-                <div class="search-bar">
+                <div class="search-container">
                     <input type="text" class="search-input" placeholder="Search items..." />
                 </div>
                 <ul>
@@ -38,7 +38,11 @@
     <main>
         @RenderBody()
     </main>
-
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - _2AuthenticAPP - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
     <script src="~/js/site.js"></script>
     @RenderSection("Scripts", required: false)
     <script src="~/js/cart.js"></script>
