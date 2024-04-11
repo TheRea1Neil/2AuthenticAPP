@@ -54,6 +54,30 @@
                 <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Manage Two-factor Authentication</a>
             </div>
         </div>
+        <!-- Right Column for Order History, wrapped in the same login-center-box class if needed -->
+        <div class="col-md-6">
+            <h3>Order History</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Order #</th>
+                        <th>Price</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example hard-coded row -->
+                    <tr>
+                        <td>Ferrari F1 Racer 1:8</td>
+                        <td>#AEJN513</td>
+                        <td>$65.00</td>
+                        <td>04/08/2024</td>
+                    </tr>
+                    <!-- Repeat for more orders or iterate over a collection -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
