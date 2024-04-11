@@ -45,11 +45,11 @@ else
     app.UseHsts();
 }
 //contente security policy
-app.Use(async (context, next) =>
-{
-    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self';");
-    await next();
-});
+//app.Use(async (context, next) =>
+//{
+//    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self';");
+//    await next();
+//});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
