@@ -96,10 +96,11 @@ namespace _2AuthenticAPP.Controllers
             });
             return View(viewModel);
         }
-
+        [Authorize]
         [HttpPost]
         public IActionResult AddToWishlist(int customerId, int productId)
         {
+
             _productRepo.AddToWishlist(customerId, productId);
             return Ok();
         }
@@ -147,9 +148,11 @@ namespace _2AuthenticAPP.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddToCart(int productId)
         {
+
             if (User.Identity.IsAuthenticated)
             {
                 // Get the IdentityUser object for the logged-in user
