@@ -1,0 +1,32 @@
+﻿@model _2AuthenticAPP.Models.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="container">
+    <h2>Checkout</h2>
+
+    <div class="cart-summary">
+        @foreach (var item in Model.CartItems)
+        {
+            <div class="cart-item">
+                <div class="item-details">
+                    <h3>@item.Name</h3>
+                    <p>Quantity: @item.Qty</p>
+                    <p>Price: @item.Price.Value.ToString("C")</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="order-total">
+        <h4>Total Amount: @Model.TotalAmount.ToString("C")</h4>
+    </div>
+
+    <div class="checkout-actions">
+        <form asp-action="PlaceOrder" method="post">
+            <button type="submit" class="btn btn-primary">Place Order</button>
+        </form>
+    </div>
+</div>
