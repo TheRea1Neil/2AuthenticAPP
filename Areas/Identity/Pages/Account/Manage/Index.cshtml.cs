@@ -6,9 +6,11 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using _2AuthenticAPP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
 {
@@ -16,13 +18,16 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly BorchardtDbContext _context;
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
+            BorchardtDbContext context,
             SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         /// <summary>
@@ -49,6 +54,9 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        /// 
+        public Customer Customer { get; set; }
+
         public class InputModel
         {
             /// <summary>
@@ -82,6 +90,17 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account.Manage
             }
 
             await LoadAsync(user);
+
+          
+            string userEmail = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+                if (!string.IsNullOrEmpty(userEmail))
+                {
+                    Customer = await _context.Customers
+                                             .FirstOrDefaultAsync(c => c.Email == userEmail);
+                }
+            
+
             return Page();
         }
 

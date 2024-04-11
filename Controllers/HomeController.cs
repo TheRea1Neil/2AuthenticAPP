@@ -159,7 +159,7 @@ namespace _2AuthenticAPP.Controllers
                 if (customer != null)
                 {
                     // Convert CustomerId from long to int
-                    long customerId = customer.CustomerId;
+                    int customerId = customer.CustomerId;
 
                     // Add the product to the customer's cart
                     _productRepo.AddToCart(customerId, productId);

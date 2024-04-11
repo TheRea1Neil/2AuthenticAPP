@@ -1,10 +1,11 @@
 ﻿@page
 @model IndexModel
+
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
-
+<p>@Model.Customer.FirstName</p>
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
     <div class="col-md-6">
@@ -13,6 +14,7 @@
         </form>
     </div>
 </div>
+
 
 
 <div class="login-center-box">
