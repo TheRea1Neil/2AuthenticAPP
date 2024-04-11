@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using _2AuthenticAPP.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 
 namespace _2AuthenticAPP.Controllers
 {
@@ -173,7 +174,7 @@ namespace _2AuthenticAPP.Controllers
                     return RedirectToAction("Cart");
                 }
             }
-
+            
             return Unauthorized();
         }
 
@@ -235,7 +236,8 @@ namespace _2AuthenticAPP.Controllers
             return Unauthorized();
         }
 
-    //Checkout Stuff
+        //Checkout Stuff
+        [Authorize]
         public async Task<IActionResult> Checkout()
         {
             if (User.Identity.IsAuthenticated)
@@ -260,6 +262,7 @@ namespace _2AuthenticAPP.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> PlaceOrder()
         {
@@ -310,6 +313,51 @@ namespace _2AuthenticAPP.Controllers
         }
 
 
+        //Order History Stuff
+        [Authorize]
+        public async Task<IActionResult> OrderHistory()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    var orders = await _context.Orders
+                        .Where(o => o.CustomerId == customer.CustomerId)
+                        .ToListAsync();
+
+                    return View(orders);
+                }
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
+        [Authorize]
+        public async Task<IActionResult> OrderDetails(int id)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    var order = await _context.Orders
+                        .Include(o => o.LineItems)
+                            .ThenInclude(li => li.Product)
+                        .FirstOrDefaultAsync(o => o.TransactionId == id && o.CustomerId == customer.CustomerId);
+
+                    if (order != null)
+                    {
+                        return View(order);
+                    }
+                }
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
 
 
 
