@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using _2AuthenticAPP.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 
 namespace _2AuthenticAPP.Controllers
 {
@@ -173,7 +174,7 @@ namespace _2AuthenticAPP.Controllers
                     return RedirectToAction("Cart");
                 }
             }
-
+            
             return Unauthorized();
         }
 
