@@ -6,8 +6,11 @@
     <title>@ViewData["Title"] - AuroraBrix</title>
     <link rel="stylesheet" href="~/css/site.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
+    <partial name="_CookieConsentPartial" />
+
     <header>
         <nav>
             <div class="left-nav">
@@ -37,15 +40,19 @@
 
     <main>
         @RenderBody()
+      
     </main>
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - _2AuthenticAPP - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    
+    
     <script src="~/js/site.js"></script>
     @RenderSection("Scripts", required: false)
     <script src="~/js/cart.js"></script>
-
+   
+   
 </body>
 </html>

@@ -24,9 +24,17 @@ builder.Services.AddDbContext<BorchardtDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>() // This adds role services
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<UserRolesService>();
 
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
 //Setting up repo wrapper.
 builder.Services.AddScoped<IProductRepository, EFProductRepository>();
 builder.Services.AddScoped<ICustomerRepository, EFCustomerRepository>();
@@ -45,15 +53,22 @@ else
     app.UseHsts();
 }
 //contente security policy
-//app.Use(async (context, next) =>
-//{
-//    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self';");
-//    await next();
-//});
+app.Use(async (context, next) =>
+{
+    var csp = "default-src 'self';" +
+              "img-src 'self' https://m.media-amazon.com https://www.lego.com https://images.brickset.com https://www.brickeconomy.com;" +
+              "script-src 'self';" +
+              "style-src 'self' 'unsafe-inline';" +
+              "font-src 'self';";
+
+    context.Response.Headers.Add("Content-Security-Policy", csp);
+    await next();
+});
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseCookiePolicy();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -66,5 +81,13 @@ app.UseEndpoints(endpoints =>
 });
 
 app.MapRazorPages();
+
+
+// Initialize roles
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    await RoleInitializer.InitializeAsync(roleManager);
+}
 
 app.Run();
