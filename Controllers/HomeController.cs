@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
+using _2AuthenticAPP.Models.ViewModels;
 
 namespace _2AuthenticAPP.Controllers
 {
@@ -125,7 +126,7 @@ namespace _2AuthenticAPP.Controllers
                 if (customer != null)
                 {
                     var cartedItems = _productRepo.GetCartItems(customer.CustomerId);
-                    var viewModel = cartedItems.Select(p => new ProductViewModel
+                    var viewModel = cartedItems.Select(p => new CartItemViewModel
                     {
                         ProductId = p.ProductId,
                         Name = p.Name,
@@ -136,7 +137,8 @@ namespace _2AuthenticAPP.Controllers
                         NumParts = p.NumParts,
                         PrimaryColor = p.PrimaryColor,
                         SecondaryColor = p.SecondaryColor,
-                        Category = p.Category
+                        Category = p.Category,
+                        Qty = p.Qty // Include the quantity in the view model
                     });
                     return View(viewModel);
                 }
@@ -187,6 +189,42 @@ namespace _2AuthenticAPP.Controllers
                 {
                     // Remove the product from the customer's cart
                     _productRepo.RemoveFromCart(customer.CustomerId, productId);
+                    return Ok();
+                }
+            }
+
+            return Unauthorized();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> IncreaseQuantity(int productId)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    _productRepo.IncreaseQuantity(customer.CustomerId, productId);
+                    return Ok();
+                }
+            }
+
+            return Unauthorized();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DecreaseQuantity(int productId)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+                if (customer != null)
+                {
+                    _productRepo.DecreaseQuantity(customer.CustomerId, productId);
                     return Ok();
                 }
             }

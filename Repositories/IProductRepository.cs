@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using _2AuthenticAPP.Models.ViewModels;
+using System.Linq;
 
 namespace _2AuthenticAPP.Models
 {
@@ -8,13 +9,15 @@ namespace _2AuthenticAPP.Models
         IQueryable<Product> Products { get; }
 
         //wishlist
-        void AddToWishlist(long customerId, int productId);
-        void RemoveFromWishlist(long customerId, int productId);
-        IEnumerable<Product> GetWishlistItems(long customerId);
+        void AddToWishlist(int customerId, int productId);
+        void RemoveFromWishlist(int customerId, int productId);
+        IEnumerable<Product> GetWishlistItems(int customerId);
 
         //cart
-        void AddToCart(long customerId, int productId);
-        void RemoveFromCart(long customerId, int productId);
-        IEnumerable<Product> GetCartItems(long customerId);
+        void AddToCart(int customerId, int productId);
+        void RemoveFromCart(int customerId, int productId);
+        void IncreaseQuantity(int customerId, int productId);
+        void DecreaseQuantity(int customerId, int productId);
+        IEnumerable<CartItemViewModel> GetCartItems(int customerId);
     }
 }

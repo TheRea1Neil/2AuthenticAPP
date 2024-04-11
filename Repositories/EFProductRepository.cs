@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using _2AuthenticAPP.Data;
+using _2AuthenticAPP.Models.ViewModels;
 
 namespace _2AuthenticAPP.Models
 {
@@ -19,21 +20,21 @@ namespace _2AuthenticAPP.Models
 
 
         //WISHLIST STUFF
-            public void AddToWishlist(long customerId, int productId)
+            public void AddToWishlist(int customerId, int productId)
             {
                 // Implement the logic to add the product to the customer's wishlist
                 // You can use the _context to access the database and perform the necessary operations
                 // For example, you can create a new record in a "Wishlist" table that associates the customer ID and product ID
             }
 
-            public void RemoveFromWishlist(long customerId, int productId)
+            public void RemoveFromWishlist(int customerId, int productId)
             {
                 // Implement the logic to remove the product from the customer's wishlist
                 // You can use the _context to access the database and perform the necessary operations
                 // For example, you can delete the corresponding record from the "Wishlist" table
             }
 
-            public IEnumerable<Product> GetWishlistItems(long customerId)
+            public IEnumerable<Product> GetWishlistItems(int customerId)
             {
                 // Implement the logic to retrieve the wishlisted products for the given customer
                 // You can use the _context to query the database and retrieve the products associated with the customer's wishlist
@@ -42,27 +43,31 @@ namespace _2AuthenticAPP.Models
             }
 
         //CART STUFF
-            public void AddToCart(long customerId, int productId)
+            public void AddToCart(int customerId, int productId)
             {
-                // Check if the product is already in the customer's cart
                 var existingCartItem = _context.CartItems
                     .FirstOrDefault(w => w.CustomerId == customerId && w.ProductId == productId);
 
-                if (existingCartItem == null)
+                if (existingCartItem != null)
                 {
-                    // Create a new cart item
+                    existingCartItem.Qty++; // Increment the quantity if the item already exists
+                }
+                else
+                {
                     var cartItem = new CartItem
                     {
                         CustomerId = customerId,
-                        ProductId = productId
+                        ProductId = productId,
+                        Qty = 1
                     };
 
-                    // Add the cart item to the database
                     _context.CartItems.Add(cartItem);
-                    _context.SaveChanges();
                 }
+
+                _context.SaveChanges();
             }
-            public void RemoveFromCart(long customerId, int productId)
+
+            public void RemoveFromCart(int customerId, int productId)
             {
                 // Find the cart item by customer ID and product ID
                 var cartItem = _context.CartItems
@@ -75,18 +80,55 @@ namespace _2AuthenticAPP.Models
                     _context.SaveChanges();
                 }
             }
-            public IEnumerable<Product> GetCartItems(long customerId)
+
+            public IEnumerable<CartItemViewModel> GetCartItems(int customerId)
             {
-                // Retrieve the carted products for the given customer
                 var cartedProducts = _context.CartItems
                     .Where(w => w.CustomerId == customerId)
                     .Join(_context.Products,
                         w => w.ProductId,
                         p => p.ProductId,
-                        (w, p) => p)
+                        (w, p) => new CartItemViewModel
+                        {
+                            ProductId = p.ProductId,
+                            Name = p.Name,
+                            Price = p.Price,
+                            ImgLink = p.ImgLink,
+                            Description = p.Description,
+                            Year = p.Year,
+                            NumParts = p.NumParts,
+                            PrimaryColor = p.PrimaryColor,
+                            SecondaryColor = p.SecondaryColor,
+                            Category = p.Category,
+                            Qty = w.Qty
+                        })
                     .ToList();
 
                 return cartedProducts;
+            }
+
+            public void IncreaseQuantity(int customerId, int productId)
+            {
+                var cartItem = _context.CartItems
+                    .FirstOrDefault(w => w.CustomerId == customerId && w.ProductId == productId);
+
+                if (cartItem != null)
+                {
+                    cartItem.Qty++;
+                    _context.SaveChanges();
+                }
+            }
+
+            public void DecreaseQuantity(int customerId, int productId)
+            {
+                var cartItem = _context.CartItems
+                    .FirstOrDefault(w => w.CustomerId == customerId && w.ProductId == productId);
+
+                if (cartItem != null && cartItem.Qty > 1)
+                {
+                    cartItem.Qty--;
+                    _context.SaveChanges();
+                }
             }
 
     }
