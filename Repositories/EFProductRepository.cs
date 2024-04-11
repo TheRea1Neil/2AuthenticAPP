@@ -19,21 +19,21 @@ namespace _2AuthenticAPP.Models
 
 
         //WISHLIST STUFF
-            public void AddToWishlist(int customerId, int productId)
+            public void AddToWishlist(long customerId, int productId)
             {
                 // Implement the logic to add the product to the customer's wishlist
                 // You can use the _context to access the database and perform the necessary operations
                 // For example, you can create a new record in a "Wishlist" table that associates the customer ID and product ID
             }
 
-            public void RemoveFromWishlist(int customerId, int productId)
+            public void RemoveFromWishlist(long customerId, int productId)
             {
                 // Implement the logic to remove the product from the customer's wishlist
                 // You can use the _context to access the database and perform the necessary operations
                 // For example, you can delete the corresponding record from the "Wishlist" table
             }
 
-            public IEnumerable<Product> GetWishlistItems(int customerId)
+            public IEnumerable<Product> GetWishlistItems(long customerId)
             {
                 // Implement the logic to retrieve the wishlisted products for the given customer
                 // You can use the _context to query the database and retrieve the products associated with the customer's wishlist
@@ -42,7 +42,7 @@ namespace _2AuthenticAPP.Models
             }
 
         //CART STUFF
-            public void AddToCart(int customerId, int productId)
+            public void AddToCart(long customerId, int productId)
             {
                 // Check if the product is already in the customer's cart
                 var existingCartItem = _context.CartItems
@@ -62,7 +62,7 @@ namespace _2AuthenticAPP.Models
                     _context.SaveChanges();
                 }
             }
-            public void RemoveFromCart(int customerId, int productId)
+            public void RemoveFromCart(long customerId, int productId)
             {
                 // Find the cart item by customer ID and product ID
                 var cartItem = _context.CartItems
@@ -75,7 +75,7 @@ namespace _2AuthenticAPP.Models
                     _context.SaveChanges();
                 }
             }
-            public IEnumerable<Product> GetCartItems(int customerId)
+            public IEnumerable<Product> GetCartItems(long customerId)
             {
                 // Retrieve the carted products for the given customer
                 var cartedProducts = _context.CartItems

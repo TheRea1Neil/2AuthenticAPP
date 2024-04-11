@@ -8,13 +8,13 @@ namespace _2AuthenticAPP.Models
         IQueryable<Product> Products { get; }
 
         //wishlist
-        void AddToWishlist(int customerId, int productId);
-        void RemoveFromWishlist(int customerId, int productId);
-        IEnumerable<Product> GetWishlistItems(int customerId);
+        void AddToWishlist(long customerId, int productId);
+        void RemoveFromWishlist(long customerId, int productId);
+        IEnumerable<Product> GetWishlistItems(long customerId);
 
         //cart
-        void AddToCart(int customerId, int productId);
-        void RemoveFromCart(int customerId, int productId);
-        IEnumerable<Product> GetCartItems(int customerId);
+        void AddToCart(long customerId, int productId);
+        void RemoveFromCart(long customerId, int productId);
+        IEnumerable<Product> GetCartItems(long customerId);
     }
 }
