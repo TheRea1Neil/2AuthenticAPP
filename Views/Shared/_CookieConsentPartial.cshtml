@@ -22,11 +22,12 @@
         </button>
     </div>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $("#cookieConsentdiv button[data-cookie-string]").bind("click", function () {
-                document.cookie = $("#cookieConsentdiv button").attr("data-cookie-string");
-                $("#cookieConsentdiv").hide();
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelector("#cookieConsentdiv button[data-cookie-string]").addEventListener("click", function () {
+                document.cookie = this.getAttribute("data-cookie-string");
+                document.getElementById("cookieConsentdiv").style.display = 'none';
             });
         });
     </script>
+
 }  
