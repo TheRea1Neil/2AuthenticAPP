@@ -18,44 +18,48 @@
 
         <h4>Category</h4>
         <div class="form-group">
-            @foreach (var category in categories )
-                {
-                    <p>@category</p>
-                }
-            <label><input type="checkbox"> Star Wars</label>
-            <label><input type="checkbox"> DC</label>
-            <label><input type="checkbox"> Harry Potter</label>
-            <label><input type="checkbox"> Technic</label>
-            <label><input type="checkbox"> Vehicle</label>
-            <label><input type="checkbox"> Person</label>
+          <!-- Initially visible categories -->
+          <div id="initialCategories">
+            @for (int i = 0; i < Math.Min(5, categories.Count); i++)
+            {
+              <label>
+                <input type="checkbox" value="@categories[i]">@categories[i]
+              </label>
+            }
+          </div>
 
-            <!-- Hidden categories that will be shown when "See More" is clicked -->
-            <div id="additionalCategories" style="display: none;">
-                <label><input type="checkbox"> Category 1</label>
-                <label><input type="checkbox"> Category 2</label>
-                <!-- Add more hidden categories here -->
-            </div>
-    
-            <!-- Button to toggle more/less categories -->
-            <button onclick="toggleCategories()" id="toggleButton">See More</button>
+          <!-- Hidden categories -->
+          <div id="additionalCategories" style="display: none;">
+            @for (int i = 5; i < categories.Count; i++)
+            {
+              <label>
+                <input type="checkbox" value="@categories[i]">@categories[i]
+              </label>
+            }
+          </div>
+
+          <!-- Button to toggle more/less categories -->
+          <button onclick="toggleCategories()" id="toggleButton">See More</button>
         </div>
+
 
         @section Scripts {
             <script>
-                function toggleCategories() {
-                    var additionalCategories = document.getElementById('additionalCategories');
-                    var toggleButton = document.getElementById('toggleButton');
-            
-                    if (additionalCategories.style.display === 'none') {
-                        additionalCategories.style.display = 'block';
-                        toggleButton.textContent = 'See Less';
-                    } else {
-                        additionalCategories.style.display = 'none';
-                        toggleButton.textContent = 'See More';
-                    }
+              function toggleCategories() {
+                var additionalCategories = document.getElementById('additionalCategories');
+                var toggleButton = document.getElementById('toggleButton');
+
+                // Check the current state and toggle accordingly
+                if (additionalCategories.style.display == 'none') {
+                  additionalCategories.style.display = 'block'; // Show the additional categories
+                  toggleButton.textContent = 'See Less';        // Change button text to "See Less"
+                } else {
+                  additionalCategories.style.display = 'none';  // Hide the additional categories
+                  toggleButton.textContent = 'See More';        // Change button text back to "See More"
                 }
+              }
             </script>
-}
+        }
 
 
         <h4>Number of Parts</h4>
