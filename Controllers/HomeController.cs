@@ -236,7 +236,8 @@ namespace _2AuthenticAPP.Controllers
             return Unauthorized();
         }
 
-    //Checkout Stuff
+        //Checkout Stuff
+        [Authorize]
         public async Task<IActionResult> Checkout()
         {
             if (User.Identity.IsAuthenticated)
@@ -261,6 +262,7 @@ namespace _2AuthenticAPP.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> PlaceOrder()
         {
@@ -311,7 +313,8 @@ namespace _2AuthenticAPP.Controllers
         }
 
 
-    //Order History Stuff
+        //Order History Stuff
+        [Authorize]
         public async Task<IActionResult> OrderHistory()
         {
             if (User.Identity.IsAuthenticated)
@@ -331,7 +334,7 @@ namespace _2AuthenticAPP.Controllers
 
             return RedirectToAction("Login", "Account");
         }
-
+        [Authorize]
         public async Task<IActionResult> OrderDetails(int id)
         {
             if (User.Identity.IsAuthenticated)
