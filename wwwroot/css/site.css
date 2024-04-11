@@ -26,6 +26,21 @@ nav {
     color: #000;
 }
 
+.navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+}
+
+.form-inline {
+    display: flex;
+    align-items: center;
+}
+
 .left-nav {
     display: flex;
     align-items: center;
@@ -57,13 +72,17 @@ nav ul {
 
 .search-bar {
     margin-right: 20px;
+    width: 100%; /* This will make the container take the full width available */
+    max-width: 1000px; /* This will limit the container's max width */
 }
 
-    .search-bar input {
-        padding: 5px;
-        border: 1px solid #000;
-        border-radius: 5px;
-    }
+.search-input {
+    width: 100%; /* This will make the input inside the container take up the full width */
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 5px;
+}
+
 
 /* Main content styles */
 main {
