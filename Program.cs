@@ -57,13 +57,14 @@ app.Use(async (context, next) =>
 {
     var csp = "default-src 'self';" +
               "img-src 'self' https://m.media-amazon.com https://www.lego.com https://images.brickset.com https://www.brickeconomy.com;" +
-              "script-src 'self';" +
-              "style-src 'self' 'unsafe-inline';" +
+              
+              "script-src 'self' 'unsafe-inline' https://code.jquery.com;" +
               "font-src 'self';";
 
     context.Response.Headers.Add("Content-Security-Policy", csp);
     await next();
 });
+
 
 
 app.UseHttpsRedirection();
