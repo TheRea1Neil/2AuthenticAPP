@@ -10,11 +10,32 @@ namespace _2AuthenticAPP.Controllers
     public class AdminController : Controller
     {
         private readonly BorchardtDbContext _context;
+        private readonly UserRolesService _userRolesService;
 
-        public AdminController(BorchardtDbContext context)
+        public AdminController(BorchardtDbContext context, UserRolesService userRolesService)
         {
             _context = context;
+            _userRolesService = userRolesService;
         }
+
+        public async Task<IActionResult> MakeUserAdmin(string userId)
+        {
+            var result = await _userRolesService.AddUserToAdminRoleAsync(userId);
+            if (result)
+            {
+                // Successfully added user to the Admin role
+                
+            }
+            else
+            {
+                // Failed to add user to the Admin role
+            }
+            return View(result);
+            // Redirect or return a view as necessary
+        }
+
+
+
 
         public async Task<IActionResult> Customers(string searchString, int? pageNumber)
         {
