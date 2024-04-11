@@ -19,6 +19,8 @@
                     <li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About Us</a></li>
                     <li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="OrderHistory">Order History</a></li>
                     <li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cart">Cart</a></li>
+
+                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Customers">Customers</a></li>  <!-- Needs Role Authenticity -->   
                 </ul>
             </div>
             <div class="right-nav">
@@ -36,7 +38,11 @@
     <main>
         @RenderBody()
     </main>
-
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - _2AuthenticAPP - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
     <script src="~/js/site.js"></script>
     @RenderSection("Scripts", required: false)
     <script src="~/js/cart.js"></script>
