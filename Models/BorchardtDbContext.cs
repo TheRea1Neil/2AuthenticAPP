@@ -31,11 +31,15 @@ public partial class BorchardtDbContext : DbContext
 
     public virtual DbSet<Customer> Customers { get; set; }
 
+    public virtual DbSet<ItemBasedRecommendation> ItemBasedRecommendations { get; set; }
+
     public virtual DbSet<LineItem> LineItems { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
+
+    public virtual DbSet<UserBasedRecommendation> UserBasedRecommendations { get; set; }
 
     public virtual DbSet<WishListItem> WishListItems { get; set; }
 
@@ -64,6 +68,12 @@ public partial class BorchardtDbContext : DbContext
 
         modelBuilder.Entity<AspNetUser>(entity =>
         {
+            entity.ToTable(tb =>
+                {
+                    tb.HasTrigger("trg_AfterDeleteAspNetUser");
+                    tb.HasTrigger("trg_AfterInsertAspNetUser");
+                });
+
             entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
 
             entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
@@ -133,6 +143,22 @@ public partial class BorchardtDbContext : DbContext
             entity.Property(e => e.LastName).HasMaxLength(50);
         });
 
+        modelBuilder.Entity<ItemBasedRecommendation>(entity =>
+        {
+            entity.HasKey(e => e.ProductId);
+
+            entity.Property(e => e.Recommendation1).HasColumnName("Recommendation_1");
+            entity.Property(e => e.Recommendation10).HasColumnName("Recommendation_10");
+            entity.Property(e => e.Recommendation2).HasColumnName("Recommendation_2");
+            entity.Property(e => e.Recommendation3).HasColumnName("Recommendation_3");
+            entity.Property(e => e.Recommendation4).HasColumnName("Recommendation_4");
+            entity.Property(e => e.Recommendation5).HasColumnName("Recommendation_5");
+            entity.Property(e => e.Recommendation6).HasColumnName("Recommendation_6");
+            entity.Property(e => e.Recommendation7).HasColumnName("Recommendation_7");
+            entity.Property(e => e.Recommendation8).HasColumnName("Recommendation_8");
+            entity.Property(e => e.Recommendation9).HasColumnName("Recommendation_9");
+        });
+
         modelBuilder.Entity<LineItem>(entity =>
         {
             entity.HasKey(e => new { e.TransactionId, e.ProductId });
@@ -159,6 +185,15 @@ public partial class BorchardtDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.PrimaryColor).HasMaxLength(50);
             entity.Property(e => e.SecondaryColor).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<UserBasedRecommendation>(entity =>
+        {
+            entity.HasKey(e => e.CustomerId).HasName("PK_UserBasedRecommendation");
+
+            entity.Property(e => e.CustomerId)
+                .ValueGeneratedNever()
+                .HasColumnName("CustomerID");
         });
 
         modelBuilder.Entity<WishListItem>(entity =>
