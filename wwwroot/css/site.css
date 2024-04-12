@@ -374,8 +374,8 @@ main {
 }
 
 .image-container img {
-    width: 200px; /* Set to the desired width */
-    height: 200px; /* Set to the desired height */
+    height: 180px;
+    width: 180px; /* Set to the desired width */
     object-fit: cover; /* This will cover the area without stretching the image */
 }
 
@@ -481,7 +481,7 @@ main {
 
     .product-image img {
         max-width: 100%;
-        height: auto;
+        height: 180px;
         object-fit: contain;
         max-height: 300px;
     }
@@ -883,7 +883,7 @@ main {
     /* Style for item images */
     .cart-page-container .cart-item-image img {
         width: 100px; /* Fixed width for consistency */
-        height: auto; /* Maintain aspect ratio */
+        height: 180px;
         display: block;
         margin: auto;
     }
@@ -938,6 +938,6 @@ main {
     .cart-page-container .cart-item-image img {
         width: auto;
         max-width: 100%;
-        height: auto;
+        height: 180px;
     }
 }
