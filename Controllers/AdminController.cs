@@ -233,22 +233,44 @@ namespace _2AuthenticAPP.Controllers
         // Add more admin-specific methods as needed
 
         // Prediction Realm
-        public IActionResult Orders()
+        public async Task<IActionResult> Orders(string searchString, bool showFraudOnly = false, int? pageNumber = 1, int pageSize = 100)
         {
-            var records = _context.Orders.ToList();  // Fetch all records
-            var predictions = new OrderViewModel();  // Your ViewModel for the view
+            var records = _context.Orders
+                .Include(o => o.Customer)
+                .AsQueryable();
 
-            // Dictionary mapping the numeric prediction to an animal type
-            var class_type_dict = new Dictionary<int, string>
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                records = records.Where(o => o.TransactionId.ToString().Contains(searchString) ||
+                                             o.Customer.Email.Contains(searchString));
+            }
+
+            if (showFraudOnly)
+            {
+                records = records.Where(o => o.Fraud == 1);
+            }
+
+            var totalOrders = await records.CountAsync();
+            var paginatedOrders = await records.Skip((pageNumber.Value - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var predictions = new OrderViewModel
+            {
+                SearchString = searchString,
+                ShowFraudOnly = showFraudOnly,
+                PageNumber = pageNumber.Value,
+                TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
+                FraudPredictions = new List<FraudPrediction>()
+            };
+
+            var classTypeDict = new Dictionary<int, string>
             {
                 { 0, "Valid" },
                 { 1, "Fraud" }
             };
 
-
             var january1_2023 = new DateTime(2023, 1, 1);
 
-            foreach (var record in records)
+            foreach (var record in paginatedOrders)
             {
                 // Calculate days since January 1, 2023
                 var daySinceJan12023 = record.Date.HasValue ? Math.Abs((record.Date.Value - january1_2023).Days) : 0;
@@ -314,10 +336,10 @@ namespace _2AuthenticAPP.Controllers
                 using (var results = _inferenceSession.Run(inputs))
                 {
                     var prediction = results.FirstOrDefault(item => item.Name == "output_label")?.AsTensor<long>().ToArray();
-                    predictionResult = prediction != null && prediction.Length > 0 ? class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown") : "Error in prediction";
+                    predictionResult = prediction != null && prediction.Length > 0 ? classTypeDict.GetValueOrDefault((int)prediction[0], "Unknown") : "Error in prediction";
                 }
 
-                predictions.FraudPredictions.Add(new FraudPrediction { Order = record, Prediction = predictionResult }); // Adds the order information and prediction for that order to OrdersViewModel
+                predictions.FraudPredictions.Add(new FraudPrediction { Order = record, Prediction = predictionResult });
             }
 
             return View(predictions);
