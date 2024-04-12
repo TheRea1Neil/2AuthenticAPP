@@ -768,3 +768,37 @@ main {
     background-color: rgba(255, 0, 0, 0.35); /* Red with 35% opacity */
 }
 
+.centered-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    text-align: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+    .centered-container h2 {
+        margin: 0.5em 0;
+        color: #333;
+        font-size: 2em;
+    }
+
+    .centered-container h1 {
+        margin: 0.5em 0;
+        color: #0056b3;
+        font-size: 3em;
+    }
+
+    .centered-container p {
+        font-size: 1.5em;
+        line-height: 1.6;
+        color: #555;
+        max-width: 800px;
+    }
+
+        .centered-container p:last-of-type {
+            margin-top: 2em;
+        }
