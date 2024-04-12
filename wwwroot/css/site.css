@@ -807,13 +807,17 @@ main {
 .checkout-box {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    justify-content: space-between;
+    padding: 0 15px; /* Adjust the padding as needed for spacing on the sides */
+    box-sizing: border-box; /* Makes sure the padding doesn't add to the width */
 }
+
+    .checkout-box .cart-summary .cart-item {
+        padding-bottom: 10px; /* Adds space between cart items */
+    }
 
     .checkout-box .order-total {
         align-self: flex-end;
-        margin-top: 20px; /* Adds space between the items and the total */
+        padding-top: 10px; /* Adds top padding */
     }
 
     .checkout-box .checkout-actions {
@@ -822,5 +826,11 @@ main {
     }
 
     .checkout-box .cart-summary {
-        flex-grow: 1;
+        flex-grow: 1; /* Allows cart summary to fill the space */
+    }
+
+    .checkout-box h1 {
+        font-size: 2rem; /* Larger font size for the title */
+        margin-bottom: 1rem;
+        text-align: center;
     }
