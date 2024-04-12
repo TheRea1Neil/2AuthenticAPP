@@ -114,11 +114,12 @@
                 <input type="hidden" name="productId" value="@Model.Recommendations[0].ProductId" />
                 <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
             </form>
-            <a asp-action="UpdateProduct" asp-route-id="@Model.Recommendations[0].ProductId" class="btn btn-primary">Update</a>
-            <a asp-action="DeleteProduct" asp-route-id="@Model.Recommendations[0].ProductId" class="btn btn-danger">Delete</a>
         </div>
     </div>
     <div class="product-image">
         <img src="@Model.Recommendations[0].ImgLink" alt="@Model.Recommendations[0].Name">
+        <img src="@Model.Recommendations[1].ImgLink" alt="@Model.Recommendations[1].Name">
+        <img src="@Model.Recommendations[2].ImgLink" alt="@Model.Recommendations[2].Name">
+        <img src="@Model.Recommendations[3].ImgLink" alt="@Model.Recommendations[3].Name">
     </div>
 </div>
