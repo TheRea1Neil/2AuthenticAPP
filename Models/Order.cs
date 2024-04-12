@@ -36,4 +36,4 @@ public partial class Order
         public virtual Customer Customer { get; set; }
 
     }
-}
+
