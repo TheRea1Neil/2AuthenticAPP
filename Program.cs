@@ -38,7 +38,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<UserRolesService>();
 
-
+builder.Logging.AddConsole();
 
 builder.Services.Configure<SendGridSettings>(options =>
 {
@@ -89,10 +89,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-//HSTS set up
 
-
-app.UseHsts();
 
 
 
