@@ -48,12 +48,14 @@
                             <br />
                                 <button type="submit" class="btn btn-primary">Forget this browser</button>
                             </form>
+                            <br />
                             <a asp-page="./Disable2fa" class="btn btn-primary mx-1">Disable 2FA</a>
                             <a asp-page="./GenerateRecoveryCodes" class="btn btn-primary mx-1">Reset recovery codes</a>
                         </div>
+                       
                     }
 
-                    <h4 class="text-center mt-4">Authenticator app</h4>
+                   
                     <br />
                     <div class="text-center my-3">
                         @if (!Model.HasAuthenticator)
