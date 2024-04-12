@@ -36,10 +36,6 @@ namespace _2AuthenticAPP.Controllers
             _inferenceSession = new InferenceSession("C:\\Users\\sdhjk\\source\\repos\\2AuthenticAPP\\GradientBoostingClassifier_model.onnx");
         }
 
-        
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9)
-
-
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9, string category = null, int? minParts = null, int? maxParts = null, decimal? minPrice = null, decimal? maxPrice = null, string primaryColor = null, string secondaryColor = null)
         {
             var productsQuery = _productRepo.Products
