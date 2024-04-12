@@ -380,7 +380,9 @@ main {
 }
 
     .actions .btn {
-        margin-bottom: 10px;
+        width: auto; /* Override any specific width settings */
+        padding: 0.5em 1em; /* Adjust the padding as needed */
+        display: inline-block; /* Allows the button to shrink to the size of its content */
     }
 
 .product-description {
@@ -857,9 +859,3 @@ main {
         margin-left: auto;
         margin-right: auto;
     }
-
-.actions .btn {
-    width: auto; /* Override any specific width settings */
-    padding: 0.5em 1em; /* Adjust the padding as needed */
-    display: inline-block; /* Allows the button to shrink to the size of its content */
-}
