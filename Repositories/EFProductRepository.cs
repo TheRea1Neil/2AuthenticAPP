@@ -100,7 +100,7 @@ namespace _2AuthenticAPP.Models
                             PrimaryColor = p.PrimaryColor,
                             SecondaryColor = p.SecondaryColor,
                             Category = p.Category,
-                            Qty = w.Qty
+                            Qty = (int)w.Qty
                         })
                     .ToList();
 
