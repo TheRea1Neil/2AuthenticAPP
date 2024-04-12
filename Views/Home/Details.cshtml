@@ -54,11 +54,13 @@
                     <input type="hidden" name="productId" value="@Model.ProductId" />
                     <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
                 </form>
+
                 @if (User.IsInRole("Admin"))
                 {
                     <a asp-action="UpdateProduct" asp-route-id="@Model.ProductId" class="btn btn-primary">Update</a>
                     <a asp-action="DeleteProduct" asp-route-id="@Model.ProductId" class="btn btn-danger">Delete</a>
                 }
+
             </div>
         </div>
 
@@ -68,25 +70,61 @@
     </div>
 </div>
 
-<div class="recommended-products">
-    <h3>Recommended Products</h3>
-    <div class="product-grid">
-        @foreach (var product in Model.Recommendations)
-        {
-            <div class="product-card">
-                <img src="@product.ImgLink" alt="@product.Name" class="product-thumbnail" />
-                <div class="product-info">
-                    <h4>@product.Name</h4>
-                    <div class="rating">
-                        <span>@product.AverageRating?.ToString("0.0")</span>
-                        <span class="star">&#9733;</span>
-                    </div>
-                    <div class="price">@product.Price?.ToString("C")</div>
-                </div>
-                <div class="product-actions">
-                    <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="btn btn-primary">Go to Page</a>
-                </div>
+@*
+<div>
+    @ViewBag.Recommendations.Recommendation1
+</div> *@
+
+<div class="product-details-card">
+    <div class="product-header">
+        <h2 class="product-title">@Model.Recommendations[0].Name</h2>
+        <div class="product-price-rating">
+            <div class="rating">
+                <span>@Model.AverageRating?.ToString("0.0")</span>
+                <span class="star">&#9733;</span>
             </div>
-        }
+            <div class="price">
+                <span class="price-value">@Model.Recommendations[0].Price?.ToString("C")</span>
+            </div>
+        </div>
+    </div>
+    <div class="product-main-content">
+        <div class="product-specs">
+            <div class="spec-item">
+                <span class="spec-title">Pieces:</span>
+                <span class="spec-detail">@Model.Recommendations[0].NumParts</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-title">Year:</span>
+                <span class="spec-detail">@Model.Recommendations[0].Year</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-title">Category:</span>
+                <span class="spec-detail">@Model.Recommendations[0].Category</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-title">Primary Color:</span>
+                <span class="spec-detail">@Model.Recommendations[0].PrimaryColor</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-title">Secondary Color:</span>
+                <span class="spec-detail">@Model.Recommendations[0].SecondaryColor</span>
+            </div>
+        </div>
+        <div class="product-description">
+            <p>@Model.Recommendations[0]l.Description</p>
+        </div>
+        <div class="actions">
+            <form asp-controller="Home" asp-action="AddToCart" method="post">
+                <input type="hidden" name="productId" value="@Model.Recommendations[0].ProductId" />
+                <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
+            </form>
+        </div>
+    </div>
+    <div class="product-image">
+        <img src="@Model.Recommendations[0].ImgLink" alt="@Model.Recommendations[0].Name">
+        <img src="@Model.Recommendations[1].ImgLink" alt="@Model.Recommendations[1].Name">
+        <img src="@Model.Recommendations[2].ImgLink" alt="@Model.Recommendations[2].Name">
+        <img src="@Model.Recommendations[3].ImgLink" alt="@Model.Recommendations[3].Name">
     </div>
 </div>
