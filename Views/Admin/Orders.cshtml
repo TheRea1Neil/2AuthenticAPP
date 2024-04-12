@@ -4,63 +4,69 @@
     ViewData["Title"] = "Orders";
 }
 
-<h2>Orders</h2>
+<h1 style="text-align: center;">Orders Management</h1>
 
-<form asp-action="Orders" method="get">
-    <div class="form-group">
-        <label for="searchString">Search by Transaction ID or Customer Email:</label>
-        <input type="text" class="form-control" name="searchString" value="@Model.SearchString" />
-    </div>
-    <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="showFraudOnly" name="showFraudOnly" value="true" checked="@Model.ShowFraudOnly" />
-        <label class="form-check-label" for="showFraudOnly">Show Fraud Orders Only</label>
-    </div>
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
+<div style="padding: 20px; margin-top: 10px;">
+    <form asp-action="Orders" method="get" class="form-inline" style="justify-content: center; display: flex; gap: 10px; margin-bottom: 20px;">
+        <input type="text" class="form-control" name="searchString" placeholder="Search by Transaction ID" value="@Model.SearchString" />
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="showFraudOnly" name="showFraudOnly" value="true" checked="@Model.ShowFraudOnly" />
+            <label class="form-check-label" for="showFraudOnly">Show Fraud Orders Only</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Transaction ID</th>
-            <th>Customer Email</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Fraud</th>
-            <th>Fraud Prediction</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var prediction in Model.FraudPredictions)
-        {
-            <tr>
-                <td>@prediction.Order.TransactionId</td>
-                <td>@prediction.Order.Customer?.Email</td>
-                <td>@prediction.Order.Date</td>
-                <td>@prediction.Order.Amount</td>
-                <td>@(prediction.Order.Fraud == 1 ? "Yes" : "No")</td>
-                <td>@prediction.Prediction</td>
-            </tr>
+    <nav class="pagination" style="justify-content: center; display: flex;">
+        @{
+            var prevDisabled = Model.PageNumber == 1 ? "disabled" : "";
+            var nextDisabled = Model.PageNumber == Model.TotalPages ? "disabled" : "";
         }
-    </tbody>
-</table>
 
-@{
-    var prevDisabled = Model.PageNumber == 1 ? "disabled" : "";
-    var nextDisabled = Model.PageNumber == Model.TotalPages ? "disabled" : "";
-}
+        <a asp-action="Orders"
+           asp-route-pageNumber="@(Model.PageNumber - 1)"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-showFraudOnly="@Model.ShowFraudOnly"
+           class="btn @prevDisabled">
+            Previous
+        </a>
+        <a asp-action="Orders"
+           asp-route-pageNumber="@(Model.PageNumber + 1)"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-showFraudOnly="@Model.ShowFraudOnly"
+           class="btn @nextDisabled">
+            Next
+        </a>
+    </nav>
+</div>
 
-<a asp-action="Orders"
-   asp-route-pageNumber="@(Model.PageNumber - 1)"
-   asp-route-searchString="@Model.SearchString"
-   asp-route-showFraudOnly="@Model.ShowFraudOnly"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-
-<a asp-action="Orders"
-   asp-route-pageNumber="@(Model.PageNumber + 1)"
-   asp-route-searchString="@Model.SearchString"
-   asp-route-showFraudOnly="@Model.ShowFraudOnly"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
+<main class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Customer Email</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Fraud</th>
+                <th>Prediction</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prediction in Model.FraudPredictions.OrderBy(p => string.IsNullOrEmpty(p.Order.Customer?.Email)))
+            {
+                <tr>
+                    <td>@prediction.Order.TransactionId</td>
+                    <td>@prediction.Order.Customer?.FirstName</td>
+                    <td>@prediction.Order.Customer?.LastName</td>
+                    <td>@prediction.Order.Customer?.Email</td>
+                    <td>@prediction.Order.Date</td>
+                    <td>@prediction.Order.Amount</td>
+                    <td>@(prediction.Order.Fraud == 1 ? "Yes" : "No")</td>
+                    <td>@prediction.Prediction</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</main>

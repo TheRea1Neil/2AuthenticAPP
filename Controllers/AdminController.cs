@@ -237,8 +237,8 @@ namespace _2AuthenticAPP.Controllers
         {
             var records = _context.Orders
                 .Include(o => o.Customer)
+                .OrderBy(o => string.IsNullOrEmpty(o.Customer.Email))
                 .AsQueryable();
-
             if (!string.IsNullOrEmpty(searchString))
             {
                 records = records.Where(o => o.TransactionId.ToString().Contains(searchString) ||

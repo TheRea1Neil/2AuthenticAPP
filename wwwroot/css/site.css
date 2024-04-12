@@ -691,3 +691,55 @@ main {
         color: gray;
         text-decoration: underline;
     }
+
+
+/* Table styles */
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+    .table th, .table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+        font-size: 16px;
+    }
+
+    .table th {
+        background-color: #f8f8f8;
+    }
+
+/* Enhancements for form controls */
+.form-control, .form-check-input, .btn {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+/* Styling the form layout for better aesthetics */
+.form-inline {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Pagination button styles */
+.btn {
+    padding: 8px 16px;
+    background-color: #FFEE49; /* Header's yellow color */
+    color: #000;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+
+    .btn.disabled, .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn:not(.disabled):hover {
+        background-color: #EEDC49; /* Slightly darker yellow */
+    }
