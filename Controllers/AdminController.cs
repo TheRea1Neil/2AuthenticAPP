@@ -233,7 +233,7 @@ namespace _2AuthenticAPP.Controllers
         // Add more admin-specific methods as needed
 
         // Prediction Realm
-        public async Task<IActionResult> Orders(string searchString, bool showFraudOnly = false, int? pageNumber = 1, int pageSize = 100)
+        public async Task<IActionResult> Orders(string searchString, bool showFraudOnly = false, int? pageNumber = 1, int pageSize = 25)
         {
             var records = _context.Orders
                 .Include(o => o.Customer)

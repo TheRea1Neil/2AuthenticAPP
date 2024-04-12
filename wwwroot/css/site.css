@@ -743,3 +743,27 @@ main {
     .btn:not(.disabled):hover {
         background-color: #EEDC49; /* Slightly darker yellow */
     }
+
+/* Style for the form and pagination container */
+.form-pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Style for the form, making it align to the left */
+.search-form {
+    display: flex;
+    gap: 10px;
+}
+
+/* Pagination style to align to the right */
+.pagination {
+    display: flex;
+    gap: 10px;
+}
+
+.fraud-highlight {
+    background-color: rgba(255, 0, 0, 0.35); /* Red with 35% opacity */
+}
