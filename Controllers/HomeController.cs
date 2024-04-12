@@ -223,7 +223,7 @@ namespace _2AuthenticAPP.Controllers
                 return View(paginatedProducts);
             }
             else
-            {
+            {         
                 var productsQuery = _productRepo.Products
                 .Select(p => new ProductViewModel
                 {

@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Home Page";
     var categories = ViewBag.Categories as List<string>;
+
 }
 
 <div class="container">
@@ -112,16 +113,6 @@
     </div>
 </div>
 
-<div>
-    @ViewBag.Recommendations[0].Name
-    @ViewBag.Recommendations[1].Name
-    @ViewBag.Recommendations[2].Name
-    @ViewBag.Recommendations[3].Name
-    @ViewBag.Recommendations[4].Name
-    @ViewBag.Recommendations[5].Name
-    @ViewBag.Recommendations[6].Name
-    @ViewBag.Recommendations[7].Name
-</div>
 
 @section Scripts {
             <script>
