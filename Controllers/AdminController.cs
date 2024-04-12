@@ -28,7 +28,7 @@ namespace _2AuthenticAPP.Controllers
             _userRolesService = userRolesService;
             _userManager = userManager;
             _roleManager = roleManager;
-            //_inferenceSession = new InferenceSession("C:\\Users\\sdhjk\\source\\repos\\2AuthenticAPP\\GradientBoostingClassifier_model.onnx");
+            _inferenceSession = new InferenceSession("GradientBoostingClassifier_model.onnx");
         }
 
         public async Task<IActionResult> MakeUserAdmin(string userId)
