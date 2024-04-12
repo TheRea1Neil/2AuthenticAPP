@@ -6,12 +6,18 @@
     ViewData["Title"] = "Customers";
 }
 
+@{
+    ViewData["Title"] = "Customers";
+
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
 <h2>Customers</h2>
 
 <form asp-action="Customers" method="get">
     <div class="form-group">
         <label for="searchString">Search by name or email:</label>
-        <input type="text" class="form-control" name="searchString" value="@ViewData["CurrentFilter"]" />
+        <input type="text" class="form-control" name="searchString" style="background-color: #005cbf; color: white;" value="@ViewData["CurrentFilter"]" />
         <input type="submit" value="Search" class="btn btn-primary" />
     </div>
 </form>
@@ -45,7 +51,7 @@
                             </select>
                         </form>
                     }
-                    
+
                 </td>
                 <td><a asp-action="Delete" asp-route-id="@customer.CustomerId" class="btn btn-danger">Delete</a></td>
             </tr>
@@ -53,21 +59,85 @@
     </tbody>
 </table>
 
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
+<div class="pagination-btns">
+    <a asp-action="Customers"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    <a asp-action="Customers"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+</div>
 
-<a asp-action="Customers"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
+<style>
+    /* Button styling */
+    .btn-primary {
+        background-color: #005cbf; /* Blue similar to 'Lego blue' */
+        border: none;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 
-<a asp-action="Customers"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
+        .btn-primary:hover {
+            background-color: #004a9f; /* Slightly darker blue for hover effect */
+        }
+
+    .btn-danger {
+        background-color: red;
+        border: none;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .btn-danger:hover {
+            background-color: darkred;
+        }
+
+    /* Table styling enhancements */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+        }
+
+    /* Form styling for better alignment and spacing */
+    .form-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    label {
+        margin-right: 10px;
+    }
+
+    input[type="text"].form-control {
+        flex-grow: 1;
+    }
+
+    /* Pagination styling */
+    .pagination-btns {
+        display: flex;
+        justify-content: end;
+        gap: 10px;
+        margin-top:
