@@ -23,14 +23,14 @@ namespace _2AuthenticAPP.Controllers
         private readonly UserManager<IdentityUser> _userManager;
 
         private readonly InferenceSession _inferenceSession;
-        //private readonly string _onnxModelPath;
 
-        public HomeController(IProductRepository productRepo, BorchardtDbContext context, UserManager<IdentityUser> userManager) //, IHostEnvironment hostEnvironment
+
+        public HomeController(IProductRepository productRepo, BorchardtDbContext context, UserManager<IdentityUser> userManager) 
         {
             _productRepo = productRepo;
             _context = context;
             _userManager = userManager;
-            //_onnxModelPath = System.IO.Path.Combine(hostEnvironment.ContentRootPath, "GradientBoostingClassifier_model.onnx");
+
 
             // Initialize the InferenceSession here;
             _inferenceSession = new InferenceSession("GradientBoostingClassifier_model.onnx");
@@ -536,57 +536,94 @@ namespace _2AuthenticAPP.Controllers
         }
 
         // Perdiction Realm
-        // A single perdiction
-        //[HttpPost]
-        //public IActionResult Predict(int customerId, DateOnly date, string dayOfWeek, int time, string entryMode, float amount , string typeOfTrans, string countryOfTrans, string shippingAddress, string bank, string typeOfCard)
-        //{
-        //    // Dictionary mapping the numeric prediction to string
-        //    var class_type_dict = new Dictionary<int, string>
-        //    {
-        //        { 0, "Valid" },
-        //        { 1, "Fraud" }
-        //    };
 
-        //    // Calculate days since January 1, 2023
+       [HttpPost]
+        public IActionResult Predict(int customerId, DateTime date, string dayOfWeek, int time, string entryMode, float amount, string typeOfTrans, string countryOfTrans, string shippingAddress, string bank, string typeOfCard)
+        {
+            // Dictionary mapping the numeric prediction to string
+            var class_type_dict = new Dictionary<int, string>
+            {
+                { 0, "Valid" },
+                { 1, "Fraud" }
+            };
 
-        //    var january1_2023 = new DateOnly(2023, 1, 1);
+            // Calculate days since January 1, 2023
+
+            var january1_2023 = new DateTime(2023, 1, 1);
+
+            var daySinceJan12023 = Math.Abs((date - january1_2023).Days);
+
+            var input = new List<float>
+            {
+                (float)customerId,
+                (float)daySinceJan12023,
+                (float)time,
+                (float)amount,
+
+                // Check the dummy coded data
+                // Deal with week day
+                dayOfWeek == "Mon" ? 1 : 0,
+                dayOfWeek == "Sat" ? 1 : 0,
+                dayOfWeek == "Sun" ? 1 : 0,
+                dayOfWeek == "Thu" ? 1 : 0,
+                dayOfWeek == "Tue" ? 1 : 0,
+                dayOfWeek == "Wed" ? 1 : 0,
+
+                //Entry Mode
+                entryMode == "PIN" ? 1 : 0,
+                entryMode == "Tap" ? 1 : 0,
+
+                // Transaction Type
+                typeOfTrans == "Online" ? 1 : 0,
+                typeOfTrans == "POS" ? 1 : 0,
+
+                // Country of Transaction
+                countryOfTrans == "Indian" ? 1 : 0,
+                countryOfTrans == "Russia" ? 1 : 0,
+                countryOfTrans == "USA" ? 1 : 0,
+                countryOfTrans == "United Kingdom" ? 1 : 0,
+
+                //Shipping Address
+                (shippingAddress ?? countryOfTrans) == "India" ? 1 : 0,
+                (shippingAddress ?? countryOfTrans) == "Russia" ? 1 : 0,
+                (shippingAddress ?? countryOfTrans) == "USA" ? 1 : 0,
+                (shippingAddress ?? countryOfTrans) == "United Kingdom" ? 1 : 0,
+
+                // Bank
+                bank == "HSBC" ? 1 : 0,
+                bank == "Halifax" ? 1 : 0,
+                bank == "Lloyds" ? 1 : 0,
+                bank == "Metro" ? 1 : 0,
+                bank == "Monzo" ? 1 : 0,
+                bank == "RBS" ? 1 : 0,
+
+                // Type of Card
+                typeOfCard == "Visa" ? 1 : 0,
+            };
+            var inputTensor = new DenseTensor<float>(input.ToArray(), new[] { 1, input.Count });
+
+            var inputs = new List<NamedOnnxValue>
+            {
+                NamedOnnxValue.CreateFromTensor("float_input", inputTensor)
+            };
 
 
+            using (var results = _inferenceSession.Run(inputs)) // makes the prediction with the inputs from the form (i.e. class_type 1-7)
+            {
+                var prediction = results.FirstOrDefault(item => item.Name == "output_label")?.AsTensor<long>().ToArray();
+                if (prediction != null && prediction.Length > 0)
+                {
+                    // Use the prediction to get the animal type from the dictionary
+                    var animalType = class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown");
+                    ViewBag.Prediction = animalType;
+                }
+                else
+                {
+                    ViewBag.Prediction = "Error: Unable to make a prediction.";
+                }
+            }
 
-        //    try
-        //    {
-        //        var input = new List<float> { hair, feathers, eggs, milk, airborne, aquatic, predator, toothed, backbone, breathes, venomous, fins, legs, tail, domestic, catsize };
-        //        var inputTensor = new DenseTensor<float>(input.ToArray(), new[] { 1, input.Count });
-
-        //        var inputs = new List<NamedOnnxValue>
-        //        {
-        //            NamedOnnxValue.CreateFromTensor("float_input", inputTensor)
-        //        };
-
-        //        using (var results = _session.Run(inputs)) // makes the prediction with the inputs from the form (i.e. class_type 1-7)
-        //        {
-        //            var prediction = results.FirstOrDefault(item => item.Name == "output_label")?.AsTensor<long>().ToArray();
-        //            if (prediction != null && prediction.Length > 0)
-        //            {
-        //                // Use the prediction to get the animal type from the dictionary
-        //                var animalType = class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown");
-        //                ViewBag.Prediction = animalType;
-        //            }
-        //            else
-        //            {
-        //                ViewBag.Prediction = "Error: Unable to make a prediction.";
-        //            }
-        //        }
-
-        //        _logger.LogInformation("Prediction executed successfully.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Error during prediction: {ex.Message}");
-        //        ViewBag.Prediction = "Error during prediction.";
-        //    }
-
-        //    return View("Index");
-        //}
+            return View("Index");
+        }
     }
 }
