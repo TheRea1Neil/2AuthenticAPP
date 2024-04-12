@@ -68,8 +68,7 @@ else
 app.Use(async (context, next) =>
 {
     var csp = "default-src 'self';" +
-              "img-src 'self' https://m.media-amazon.com https://www.lego.com https://images.brickset.com https://www.brickeconomy.com;" +
-              
+              "img-src 'self' https://m.media-amazon.com https://www.lego.com https://images.brickset.com https://www.brickeconomy.com https://public.tableau.com;" +
               "script-src 'self' 'unsafe-inline' https://code.jquery.com;" +
               "font-src 'self';";
 
