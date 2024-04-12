@@ -16,5 +16,6 @@ namespace _2AuthenticAPP.Models
         public string PrimaryColor { get; set; }
         public string SecondaryColor { get; set; }
         public string Category { get; set; }
+        public List<Product>? Recommendations { get; set; } = new List<Product>();
     }
 }
