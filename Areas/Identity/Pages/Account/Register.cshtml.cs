@@ -33,13 +33,16 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly BorchardtDbContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
+
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender, 
-            BorchardtDbContext context)
+            IEmailSender emailSender,
+            BorchardtDbContext context,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -48,8 +51,7 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _context = context;
-            
-            
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -194,6 +196,30 @@ namespace _2AuthenticAPP.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<IdentityUser>)_userStore;
+        }
+
+        public async Task<bool> AddUserToRoleAsync(string userId, string role)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return false;
+            }
+
+            var isInRole = await _userManager.IsInRoleAsync(user, role);
+            if (isInRole)
+            {
+                return true;
+            }
+
+            var hasRole = await _roleManager.RoleExistsAsync(role);
+            if (!hasRole)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(role));
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, role);
+            return result.Succeeded;
         }
     }
 }
