@@ -26,9 +26,9 @@ public partial class Product
     public string? SecondaryColor { get; set; }
 
     public string? Description { get; set; }
-        public string? Category { get; set; }
+    public string? Category { get; set; }
 
-        // Add the inverse navigation property
-        public virtual ICollection<LineItem> LineItems { get; set; }
-    }
+    // Add the inverse navigation property
+    public virtual ICollection<LineItem> LineItems { get; set; }
+    
 }
