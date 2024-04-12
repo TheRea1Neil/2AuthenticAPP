@@ -377,6 +377,9 @@ main {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
 }
 
     .actions .btn {
@@ -465,14 +468,6 @@ main {
     flex-basis: 100%;
 }
 
-.actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    margin-top: 20px;
-}
-
 .product-image {
     order: -1; /* Places the image above the other content */
     margin-bottom: 20px;
@@ -486,10 +481,17 @@ main {
     }
 
 .btn {
-    padding: 10px 20px;
+    padding: 0.5em 1em;
+    width: auto;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
+    padding: 8px 16px;
+    background-color: #BDBDBD; /* A light gray */
+    color: #000;
+    text-decoration: none;
+    border: none;
+    margin: 0 10px;
 }
 
 .btn-add-to-cart {
@@ -724,17 +726,6 @@ main {
 .form-inline {
     margin-top: 20px;
     margin-bottom: 20px;
-}
-
-/* Pagination button styles */
-.btn {
-    padding: 8px 16px;
-    background-color: #BDBDBD; /* A light gray */
-    color: #000;
-    text-decoration: none;
-    border: none;
-    border-radius: 5px;
-    margin: 0 10px;
 }
 
     .btn.disabled, .btn:disabled {
