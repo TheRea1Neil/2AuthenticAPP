@@ -75,8 +75,12 @@
     @ViewBag.Recommendations.Recommendation1
 </div> *@
 
-<div class="product-details-card" style="display: flex; justify-content: space-around; flex-wrap: wrap;">
-    <div class="product-card" style="width: 24%; margin: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
+@*
+<div>
+    RECOMMENDED ITEMS WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+</div> *@
+<div class="product-details-card" style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: nowrap;">
+    <div class="product-card" style="width: 22%; margin: 1%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
         <img src="@Model.Recommendations[0].ImgLink" alt="@Model.Recommendations[0].Name" style="width: 100%; height: auto;">
         <h2 class="product-title">@Model.Recommendations[0].Name</h2>
         <span class="price-value">@Model.Recommendations[0].Price?.ToString("C")</span>
@@ -88,7 +92,7 @@
         </div>
     </div>
 
-    <div class="product-card" style="width: 24%; margin: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
+    <div class="product-card" style="width: 22%; margin: 1%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
         <img src="@Model.Recommendations[1].ImgLink" alt="@Model.Recommendations[1].Name" style="width: 100%; height: auto;">
         <h2 class="product-title">@Model.Recommendations[1].Name</h2>
         <span class="price-value">@Model.Recommendations[1].Price?.ToString("C")</span>
@@ -100,7 +104,7 @@
         </div>
     </div>
 
-    <div class="product-card" style="width: 24%; margin: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
+    <div class="product-card" style="width: 22%; margin: 1%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
         <img src="@Model.Recommendations[2].ImgLink" alt="@Model.Recommendations[2].Name" style="width: 100%; height: auto;">
         <h2 class="product-title">@Model.Recommendations[2].Name</h2>
         <span class="price-value">@Model.Recommendations[2].Price?.ToString("C")</span>
@@ -112,7 +116,7 @@
         </div>
     </div>
 
-    <div class="product-card" style="width: 24%; margin: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
+    <div class="product-card" style="width: 22%; margin: 1%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
         <img src="@Model.Recommendations[3].ImgLink" alt="@Model.Recommendations[3].Name" style="width: 100%; height: auto;">
         <h2 class="product-title">@Model.Recommendations[3].Name</h2>
         <span class="price-value">@Model.Recommendations[3].Price?.ToString("C")</span>
@@ -124,4 +128,6 @@
         </div>
     </div>
 </div>
+
+
 
