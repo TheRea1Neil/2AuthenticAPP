@@ -9,6 +9,10 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using _2AuthenticAPP.Models.ViewModels;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.ML;
+using Microsoft.ML.OnnxRuntime;
+using Microsoft.ML.OnnxRuntime.Tensors;
+using Microsoft.AspNetCore.Http;
 
 namespace _2AuthenticAPP.Controllers
 {
@@ -18,15 +22,21 @@ namespace _2AuthenticAPP.Controllers
         private readonly BorchardtDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(IProductRepository productRepo, BorchardtDbContext context, UserManager<IdentityUser> userManager)
+        private readonly InferenceSession _inferenceSession;
+
+
+        public HomeController(IProductRepository productRepo, BorchardtDbContext context, UserManager<IdentityUser> userManager) 
         {
             _productRepo = productRepo;
             _context = context;
             _userManager = userManager;
-        }
-       
 
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9)
+
+            // Initialize the InferenceSession here;
+            _inferenceSession = new InferenceSession("GradientBoostingClassifier_model.onnx");
+        }
+
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9, string category = null, int? minParts = null, int? maxParts = null, decimal? minPrice = null, decimal? maxPrice = null, string primaryColor = null, string secondaryColor = null)
         {
             var productsQuery = _productRepo.Products
                 .Select(p => new ProductViewModel
@@ -37,40 +47,78 @@ namespace _2AuthenticAPP.Controllers
                     ImgLink = p.ImgLink,
                     AverageRating = _context.LineItems
                         .Where(li => li.ProductId == p.ProductId)
-                        .Average(li => (int?)li.Rating)
+                        .Average(li => (int?)li.Rating),
+                    Category = p.Category,
+                    NumParts = p.NumParts,
+                    PrimaryColor = p.PrimaryColor,
+                    SecondaryColor = p.SecondaryColor
                 });
+
+            // Apply filters
+            if (!string.IsNullOrEmpty(category))
+            {
+                productsQuery = productsQuery.Where(p => p.Category.Contains(category));
+            }
+
+            if (minParts.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.NumParts >= minParts.Value);
+            }
+
+            if (maxParts.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.NumParts <= maxParts.Value);
+            }
+
+            if (minPrice.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            if (!string.IsNullOrEmpty(primaryColor))
+            {
+                productsQuery = productsQuery.Where(p => p.PrimaryColor == primaryColor);
+            }
+
+            if (!string.IsNullOrEmpty(secondaryColor))
+            {
+                productsQuery = productsQuery.Where(p => p.SecondaryColor == secondaryColor);
+            }
 
             // Pagination logic
             var paginatedProducts = await PaginatedList<ProductViewModel>.CreateAsync(productsQuery, pageNumber, pageSize);
 
-            if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                // Get the IdentityUser object for the logged-in user
-                IdentityUser user = await _userManager.GetUserAsync(User);
+            // Set ViewBag values for selected filter options
+            ViewBag.SelectedCategory = category;
+            ViewBag.SelectedMinParts = minParts;
+            ViewBag.SelectedMaxParts = maxParts;
+            ViewBag.SelectedMinPrice = minPrice;
+            ViewBag.SelectedMaxPrice = maxPrice;
+            ViewBag.SelectedPrimaryColor = primaryColor;
+            ViewBag.SelectedSecondaryColor = secondaryColor;
 
-                // Query the database to find the customer with the matching email
-                var customer = await _context.Customers
-                                             .FirstOrDefaultAsync(c => c.Email == user.Email);
-            }
-
-            // Assuming '_context' is your DbContext and 'Products' is your DbSet<Product>
-            // This part of your code fetches and processes the categories.
+            // Fetch and process categories
             var allCategories = await _context.Products
-                              .Select(p => p.Category)
-                              .ToListAsync(); // Make sure 'Category' is the correct property name.
+                .Select(p => p.Category)
+                .ToListAsync();
 
             var uniqueCategories = allCategories
-                              .SelectMany(c => c.Split('-')) // This assumes categories are pipe-separated.
-                              .Select(c => c.Trim())
-                              .Distinct()
-                              .ToList();
+                .SelectMany(c => c.Split('-'))
+                .Select(c => c.Trim())
+                .Distinct()
+                .ToList();
 
             ViewBag.Categories = uniqueCategories;
 
             // Fetch and process primary colors
             var allPrimaryColors = await _context.Products
                 .Select(p => p.PrimaryColor)
-                .Distinct() // Get distinct values
+                .Distinct()
                 .ToListAsync();
 
             ViewBag.PrimaryColors = allPrimaryColors;
@@ -78,7 +126,7 @@ namespace _2AuthenticAPP.Controllers
             // Fetch and process secondary colors
             var allSecondaryColors = await _context.Products
                 .Select(p => p.SecondaryColor)
-                .Distinct() // Get distinct values
+                .Distinct()
                 .ToListAsync();
 
             ViewBag.SecondaryColors = allSecondaryColors;
@@ -308,7 +356,7 @@ namespace _2AuthenticAPP.Controllers
                     var order = new Order
                     {
                         CustomerId = customer.CustomerId,
-                        Date = DateOnly.FromDateTime(DateTime.Now),
+                        Date = DateTime.Now,
                         DayOfWeek = DateTime.Now.DayOfWeek.ToString(),
                         Time = (byte)DateTime.Now.Hour,
                         EntryMode = "Online",
@@ -389,6 +437,67 @@ namespace _2AuthenticAPP.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        //CRUD PRODUCTS
+        public IActionResult AddProduct()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddProduct(Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Products.Add(product);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(product);
+        }
+
+        public IActionResult UpdateProduct(int id)
+        {
+            var product = _context.Products.Find(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateProduct(Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Products.Update(product);
+                _context.SaveChanges();
+                return RedirectToAction("Details", new { id = product.ProductId });
+            }
+            return View(product);
+        }
+
+        public IActionResult DeleteProduct(int id)
+        {
+            var product = _context.Products.Find(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int productId)
+        {
+            var product = _context.Products.Find(productId);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
 
 
 
@@ -424,6 +533,97 @@ namespace _2AuthenticAPP.Controllers
         public IActionResult Secrets()
         {
             return View();
+        }
+
+        // Perdiction Realm
+
+       [HttpPost]
+        public IActionResult Predict(int customerId, DateTime date, string dayOfWeek, int time, string entryMode, float amount, string typeOfTrans, string countryOfTrans, string shippingAddress, string bank, string typeOfCard)
+        {
+            // Dictionary mapping the numeric prediction to string
+            var class_type_dict = new Dictionary<int, string>
+            {
+                { 0, "Valid" },
+                { 1, "Fraud" }
+            };
+
+            // Calculate days since January 1, 2023
+
+            var january1_2023 = new DateTime(2023, 1, 1);
+
+            var daySinceJan12023 = Math.Abs((date - january1_2023).Days);
+
+            var input = new List<float>
+            {
+                (float)customerId,
+                (float)daySinceJan12023,
+                (float)time,
+                (float)amount,
+
+                // Check the dummy coded data
+                // Deal with week day
+                dayOfWeek == "Mon" ? 1 : 0,
+                dayOfWeek == "Sat" ? 1 : 0,
+                dayOfWeek == "Sun" ? 1 : 0,
+                dayOfWeek == "Thu" ? 1 : 0,
+                dayOfWeek == "Tue" ? 1 : 0,
+                dayOfWeek == "Wed" ? 1 : 0,
+
+                //Entry Mode
+                entryMode == "PIN" ? 1 : 0,
+                entryMode == "Tap" ? 1 : 0,
+
+                // Transaction Type
+                typeOfTrans == "Online" ? 1 : 0,
+                typeOfTrans == "POS" ? 1 : 0,
+
+                // Country of Transaction
+                countryOfTrans == "Indian" ? 1 : 0,
+                countryOfTrans == "Russia" ? 1 : 0,
+                countryOfTrans == "USA" ? 1 : 0,
+                countryOfTrans == "United Kingdom" ? 1 : 0,
+
+                //Shipping Address
+                (shippingAddress ?? countryOfTrans) == "India" ? 1 : 0,
+                (shippingAddress ?? countryOfTrans) == "Russia" ? 1 : 0,
+                (shippingAddress ?? countryOfTrans) == "USA" ? 1 : 0,
+                (shippingAddress ?? countryOfTrans) == "United Kingdom" ? 1 : 0,
+
+                // Bank
+                bank == "HSBC" ? 1 : 0,
+                bank == "Halifax" ? 1 : 0,
+                bank == "Lloyds" ? 1 : 0,
+                bank == "Metro" ? 1 : 0,
+                bank == "Monzo" ? 1 : 0,
+                bank == "RBS" ? 1 : 0,
+
+                // Type of Card
+                typeOfCard == "Visa" ? 1 : 0,
+            };
+            var inputTensor = new DenseTensor<float>(input.ToArray(), new[] { 1, input.Count });
+
+            var inputs = new List<NamedOnnxValue>
+            {
+                NamedOnnxValue.CreateFromTensor("float_input", inputTensor)
+            };
+
+
+            using (var results = _inferenceSession.Run(inputs)) // makes the prediction with the inputs from the form (i.e. class_type 1-7)
+            {
+                var prediction = results.FirstOrDefault(item => item.Name == "output_label")?.AsTensor<long>().ToArray();
+                if (prediction != null && prediction.Length > 0)
+                {
+                    // Use the prediction to get the animal type from the dictionary
+                    var animalType = class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown");
+                    ViewBag.Prediction = animalType;
+                }
+                else
+                {
+                    ViewBag.Prediction = "Error: Unable to make a prediction.";
+                }
+            }
+
+            return View("Index");
         }
     }
 }

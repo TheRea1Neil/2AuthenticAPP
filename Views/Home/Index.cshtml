@@ -5,83 +5,66 @@
 }
 
 <div class="container">
-    <div class="filter-section">
-        <h3>Filter</h3>
+<div class="filter-section">
+    <h3>Filter</h3>
+    <form method="get" asp-action="Index">
         <div class="form-group">
-            <select>
-                <option value="">Popular</option>
-                <option value="">Top 5</option>
-                <option value="">Newest</option>
-                <option value="">Oldest</option>
+            <select name="category">
+                <option value="">All Categories</option>
+                @foreach (var category in ViewBag.Categories)
+                {
+                    <option value="@category" selected="@(ViewBag.SelectedCategory == category ? "selected" : null)">@category</option>
+                }
             </select>
-        </div>
-
-        <h3>Category</h3>
-        <div class="form-group">
-          <!-- Initially visible categories -->
-          <div id="initialCategories" class="form-group">
-            @for (int i = 0; i < Math.Min(5, categories.Count); i++)
-            {
-              <label>
-                <input type="checkbox" value="@categories[i]">@categories[i]
-              </label>
-            }
-          </div>
-
-          <!-- Hidden categories -->
-          <div id="additionalCategories" style="display: none;">
-            @for (int i = 5; i < categories.Count; i++)
-            {
-              <label>
-                <input type="checkbox" value="@categories[i]">@categories[i]
-              </label>
-            }
-          </div>
-
-          <!-- Button to toggle more/less categories -->
-          <button onclick="toggleCategories()" id="toggleButton">See More</button>
         </div>
 
         <h3>Number of Parts</h3>
         <div class="form-group">
-            <label><input type="radio" name="parts"> 0 - 99</label>
-            <label><input type="radio" name="parts"> 100 - 499</label>
-            <label><input type="radio" name="parts"> 500 - 999</label>
-            <label><input type="radio" name="parts"> 1000+</label>
+            <label><input type="radio" name="minParts" value="0" @(ViewBag.SelectedMinParts == 0 ? "checked" : "")> 0 - 99</label>
+            <label><input type="radio" name="minParts" value="100" @(ViewBag.SelectedMinParts == 100 ? "checked" : "")> 100 - 499</label>
+            <label><input type="radio" name="minParts" value="500" @(ViewBag.SelectedMinParts == 500 ? "checked" : "")> 500 - 999</label>
+            <label><input type="radio" name="minParts" value="1000" @(ViewBag.SelectedMinParts == 1000 ? "checked" : "")> 1000+</label>
         </div>
 
         <h3>Price</h3>
         <div class="form-group">
-            <label>Min: <input type="number" min="0" step="1"></label>
-            <label>Max: <input type="number" min="0" step="1"></label>
+            <label>Min: <input type="number" name="minPrice" min="0" step="1" value="@ViewBag.SelectedMinPrice"></label>
+            <label>Max: <input type="number" name="maxPrice" min="0" step="1" value="@ViewBag.SelectedMaxPrice"></label>
         </div>
 
         <h3>Primary Color</h3>
         <div class="form-group">
-            <select id="primaryColorFilter">
+            <select name="primaryColor" id="primaryColorFilter">
                 <option value="">Select</option>
                 @foreach (var color in ViewBag.PrimaryColors)
                 {
-                    <option value="@color">@color</option>
+                    <option value="@color" selected="@(ViewBag.SelectedPrimaryColor == color ? "selected" : null)">@color</option>
                 }
             </select>
         </div>
 
         <h3>Secondary Color</h3>
         <div class="form-group">
-            <select id="secondaryColorFilter">
+            <select name="secondaryColor" id="secondaryColorFilter">
                 <option value="">Select</option>
                 @foreach (var color in ViewBag.SecondaryColors)
                 {
-                    <option value="@color">@color</option>
+                    <option value="@color" selected="@(ViewBag.SelectedSecondaryColor == color ? "selected" : null)">@color</option>
                 }
             </select>
         </div>
-    </div>
+
+        <button type="submit" class="btn btn-primary">Apply Filters</button>
+    </form>
+</div>
+
 
     <div class="product-grid">
         <div class="grid-header">
             <h2>Popular Items</h2>
+            <div class="actions">
+                <a asp-action="AddProduct" class="btn btn-primary">Add Product</a>
+            </div>
             <div class="pagination top-pagination">
                 @if (Model.HasPreviousPage)
                 {

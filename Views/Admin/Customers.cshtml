@@ -1,4 +1,6 @@
-﻿@model PaginatedList<_2AuthenticAPP.Models.Customer>
+﻿@using Microsoft.AspNetCore.Identity
+model PaginatedList<_2AuthenticAPP.Models.Customer>
+@inject UserManager<IdentityUser> UserManager
 
 @{
     ViewData["Title"] = "Customers";
@@ -31,8 +33,17 @@
                 <td>@customer.LastName</td>
                 <td>@customer.Email</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@customer.CustomerId">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@customer.CustomerId">Delete</a>
+                    @if (!string.IsNullOrEmpty(customer.Email))
+                    {
+                        <form asp-action="UpdateUserRole" method="post">
+                            <input type="hidden" name="customerId" value="@customer.CustomerId" />
+                            <select name="role" onchange="this.form.submit()">
+                                <option value="Admin" selected="@(await UserManager.IsInRoleAsync(await UserManager.FindByEmailAsync(customer.Email), "Admin"))">Admin</option>
+                                <option value="User" selected="@(await UserManager.IsInRoleAsync(await UserManager.FindByEmailAsync(customer.Email), "User"))">User</option>
+                                <option value="Guest" selected="@(await UserManager.IsInRoleAsync(await UserManager.FindByEmailAsync(customer.Email), "Guest"))">Guest</option>
+                            </select>
+                        </form>
+                    }
                 </td>
             </tr>
         }

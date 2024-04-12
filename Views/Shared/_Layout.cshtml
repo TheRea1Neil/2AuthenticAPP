@@ -23,8 +23,14 @@
                     <li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="OrderHistory">Order History</a></li>
                     <li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cart">Cart</a></li>
 
+                    
                     <li><a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Customers">Customers</a></li>
-                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Orders">Orders</a></li> <!-- Needs Role Authenticity -->   
+                    @{
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Orders">Orders</a></li>
+                        }
+                    } <!-- Needs Role Authenticity -->
                 </ul>
             </div>
             <div class="right-nav">

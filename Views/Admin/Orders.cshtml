@@ -2,6 +2,12 @@
 
 @{
     ViewData["Title"] = "Orders";
+
+    var classTypeDict = new Dictionary<int, string>
+    {
+        {0, "Valid"},
+        {1, "Fraud"},
+    };
 }
 
 <h2>Orders</h2>
@@ -26,17 +32,19 @@
             <th>Date</th>
             <th>Amount</th>
             <th>Fraud</th>
+            <th>Fraud Prediction</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var order in Model.Orders)
+        @foreach (var order in Model.FraudPredictions)
         {
             <tr>
-                <td>@order.TransactionId</td>
-                <td>@order.Customer?.Email</td>
-                <td>@order.Date</td>
-                <td>@order.Amount</td>
-                <td>@(order.Fraud == 1 ? "Yes" : "No")</td>
+                <td>@order.Order.TransactionId</td>
+                <td>@order.Order.Customer?.Email</td>
+                <td>@order.Order.Date</td>
+                <td>@order.Order.Amount</td>
+                <td>@(order.Order.Fraud == 1 ? "Yes" : "No")</td>
+                <td>@order.Prediction</td>
             </tr>
         }
     </tbody>
