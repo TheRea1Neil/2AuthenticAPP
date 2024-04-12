@@ -28,6 +28,7 @@ namespace _2AuthenticAPP.Controllers
             _userRolesService = userRolesService;
             _userManager = userManager;
             _roleManager = roleManager;
+            _inferenceSession = new InferenceSession("C:\\Users\\sdhjk\\source\\repos\\2AuthenticAPP\\GradientBoostingClassifier_model.onnx");
         }
 
         public async Task<IActionResult> MakeUserAdmin(string userId)
@@ -178,39 +179,39 @@ namespace _2AuthenticAPP.Controllers
             return _context.Customers.Any(e => e.CustomerId == id);
         }
 
-        public async Task<IActionResult> Orders(string searchString, bool showFraudOnly = false, int? pageNumber = 1)
-        {
-            int pageSize = 10;
+        //public async Task<IActionResult> Orders(string searchString, bool showFraudOnly = false, int? pageNumber = 1)
+        //{
+        //    int pageSize = 10;
 
-            var orders = _context.Orders
-                .Include(o => o.Customer) // Include the Customer navigation property
-                .AsQueryable();
+        //    var orders = _context.Orders
+        //        .Include(o => o.Customer) // Include the Customer navigation property
+        //        .AsQueryable();
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                orders = orders.Where(o => o.TransactionId.ToString().Contains(searchString) ||
-                                           o.Customer.Email.Contains(searchString));
-            }
+        //    if (!string.IsNullOrEmpty(searchString))
+        //    {
+        //        orders = orders.Where(o => o.TransactionId.ToString().Contains(searchString) ||
+        //                                   o.Customer.Email.Contains(searchString));
+        //    }
 
-            if (showFraudOnly)
-            {
-                orders = orders.Where(o => o.Fraud == 1);
-            }
+        //    if (showFraudOnly)
+        //    {
+        //        orders = orders.Where(o => o.Fraud == 1);
+        //    }
 
-            var totalOrders = await orders.CountAsync();
-            var paginatedOrders = await orders.Skip((pageNumber.Value - 1) * pageSize).Take(pageSize).ToListAsync();
+        //    var totalOrders = await orders.CountAsync();
+        //    var paginatedOrders = await orders.Skip((pageNumber.Value - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            var viewModel = new OrderViewModel
-            {
-                Orders = paginatedOrders,
-                SearchString = searchString,
-                ShowFraudOnly = showFraudOnly,
-                PageNumber = pageNumber.Value,
-                TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize)
-            };
+        //    var viewModel = new OrderViewModel
+        //    {
+        //        Orders = paginatedOrders,
+        //        SearchString = searchString,
+        //        ShowFraudOnly = showFraudOnly,
+        //        PageNumber = pageNumber.Value,
+        //        TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize)
+        //    };
 
-            return View(viewModel);
-        }
+        //    return View(viewModel);
+        //}
 
         [HttpPost]
         public async Task<IActionResult> UpdateUserRole(int customerId, string role)
@@ -316,8 +317,7 @@ namespace _2AuthenticAPP.Controllers
                     predictionResult = prediction != null && prediction.Length > 0 ? class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown") : "Error in prediction";
                 }
 
-                predictions.Orders.Add(record); // Adds the order information and prediction for that order to OrdersViewModel
-                predictions.FraudPrediction = predictionResult;
+                predictions.FraudPredictions.Add(new FraudPrediction { Order = record, Prediction = predictionResult }); // Adds the order information and prediction for that order to OrdersViewModel
             }
 
             return View(predictions);

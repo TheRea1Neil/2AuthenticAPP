@@ -36,15 +36,15 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var order in Model.Orders)
+        @foreach (var order in Model.FraudPredictions)
         {
             <tr>
-                <td>@order.TransactionId</td>
-                <td>@order.Customer.Email</td>
-                <td>@order.Date</td>
-                <td>@order.Amount</td>
-                <td>@(order.Fraud == 1 ? "Yes" : "No")</td>
-                <td>@Model.FraudPrediction</td>
+                <td>@order.Order.TransactionId</td>
+                <td>@order.Order.Customer?.Email</td>
+                <td>@order.Order.Date</td>
+                <td>@order.Order.Amount</td>
+                <td>@(order.Order.Fraud == 1 ? "Yes" : "No")</td>
+                <td>@order.Prediction</td>
             </tr>
         }
     </tbody>
