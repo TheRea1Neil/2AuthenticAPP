@@ -151,7 +151,7 @@ namespace _2AuthenticAPP.Controllers
 
             return View(paginatedProducts);
         }
-         
+
         public async Task<IActionResult> Details(int id)
         {
             var product = await _context.Products
@@ -167,7 +167,7 @@ namespace _2AuthenticAPP.Controllers
                     NumParts = p.NumParts.HasValue ? (int)p.NumParts.Value : (int?)null,
                     PrimaryColor = p.PrimaryColor,
                     SecondaryColor = p.SecondaryColor,
-                    Category = p.Category               
+                    Category = p.Category
                 }).FirstOrDefaultAsync();
 
             if (product == null)
@@ -179,6 +179,7 @@ namespace _2AuthenticAPP.Controllers
             product.AverageRating = await _context.LineItems
                 .Where(li => li.ProductId == product.ProductId)
                 .AverageAsync(li => (double?)li.Rating) ?? 0.0;
+
 
             // These are the products recommended for the individual product based on content filtering model 
             var recommendedProducts = _context.ItemBasedRecommendations
@@ -198,6 +199,16 @@ namespace _2AuthenticAPP.Controllers
                     Recommendation9 = rp.Recommendation9,
                     Recommendation10 = rp.Recommendation10
                 }).FirstOrDefault();
+
+            for (int i = 1; i <= 10; i++)
+            {
+                var propertyName = $"Recommendation{i}";
+                var propertyValue = recommendedProducts.GetType().GetProperty(propertyName)?.GetValue(recommendedProducts);
+                if (propertyValue != null && propertyValue is string recommendation)
+                {
+                    product.Recommendations.Add(_context.Products.FirstOrDefault(p => p.Name == recommendation));
+                }
+            }
 
             ViewBag.Recommendations = recommendedProducts;
 
