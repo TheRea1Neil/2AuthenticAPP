@@ -2,12 +2,6 @@
 
 @{
     ViewData["Title"] = "Orders";
-
-    var classTypeDict = new Dictionary<int, string>
-    {
-        {0, "Valid"},
-        {1, "Fraud"},
-    };
 }
 
 <h2>Orders</h2>
@@ -36,15 +30,15 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var order in Model.FraudPredictions)
+        @foreach (var prediction in Model.FraudPredictions)
         {
             <tr>
-                <td>@order.Order.TransactionId</td>
-                <td>@order.Order.Customer?.Email</td>
-                <td>@order.Order.Date</td>
-                <td>@order.Order.Amount</td>
-                <td>@(order.Order.Fraud == 1 ? "Yes" : "No")</td>
-                <td>@order.Prediction</td>
+                <td>@prediction.Order.TransactionId</td>
+                <td>@prediction.Order.Customer?.Email</td>
+                <td>@prediction.Order.Date</td>
+                <td>@prediction.Order.Amount</td>
+                <td>@(prediction.Order.Fraud == 1 ? "Yes" : "No")</td>
+                <td>@prediction.Prediction</td>
             </tr>
         }
     </tbody>
@@ -55,19 +49,18 @@
     var nextDisabled = Model.PageNumber == Model.TotalPages ? "disabled" : "";
 }
 
-<nav>
-    <ul class="pagination">
-        <li class="page-item @prevDisabled">
-            <a class="page-link" asp-action="Orders" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-searchString="@Model.SearchString" asp-route-showFraudOnly="@Model.ShowFraudOnly">Previous</a>
-        </li>
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                <a class="page-link" asp-action="Orders" asp-route-pageNumber="@i" asp-route-searchString="@Model.SearchString" asp-route-showFraudOnly="@Model.ShowFraudOnly">@i</a>
-            </li>
-        }
-        <li class="page-item @nextDisabled">
-            <a class="page-link" asp-action="Orders" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-searchString="@Model.SearchString" asp-route-showFraudOnly="@Model.ShowFraudOnly">Next</a>
-        </li>
-    </ul>
-</nav>
+<a asp-action="Orders"
+   asp-route-pageNumber="@(Model.PageNumber - 1)"
+   asp-route-searchString="@Model.SearchString"
+   asp-route-showFraudOnly="@Model.ShowFraudOnly"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+
+<a asp-action="Orders"
+   asp-route-pageNumber="@(Model.PageNumber + 1)"
+   asp-route-searchString="@Model.SearchString"
+   asp-route-showFraudOnly="@Model.ShowFraudOnly"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
