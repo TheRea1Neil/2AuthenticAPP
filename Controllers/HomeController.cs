@@ -373,6 +373,67 @@ namespace _2AuthenticAPP.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        //CRUD PRODUCTS
+        public IActionResult AddProduct()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddProduct(Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Products.Add(product);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(product);
+        }
+
+        public IActionResult UpdateProduct(int id)
+        {
+            var product = _context.Products.Find(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateProduct(Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Products.Update(product);
+                _context.SaveChanges();
+                return RedirectToAction("Details", new { id = product.ProductId });
+            }
+            return View(product);
+        }
+
+        public IActionResult DeleteProduct(int id)
+        {
+            var product = _context.Products.Find(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int productId)
+        {
+            var product = _context.Products.Find(productId);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
 
 
 
