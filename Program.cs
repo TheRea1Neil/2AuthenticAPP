@@ -9,12 +9,13 @@ using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
-builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
+//var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
+//builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
+
 var services = builder.Services;
 var configuration = builder.Configuration;
-// Assuming your API Key is used here for demonstration:
-var apiKey = builder.Configuration["ApiKey"];  // Retrieve the API key from configuration
+//// Assuming your API Key is used here for demonstration:
+//var apiKey = builder.Configuration["ApiKey"];  // Retrieve the API key from configuration
 
 services.AddAuthentication().AddGoogle(googleOptions =>
 {
