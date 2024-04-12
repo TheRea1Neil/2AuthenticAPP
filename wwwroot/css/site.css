@@ -109,7 +109,7 @@ nav ul {
 
 .right-nav {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     width: 100%;
 }
@@ -373,14 +373,25 @@ main {
     margin-bottom: 10px;
 }
 
+.image-container img {
+    height: 180px;
+    width: 180px; /* Set to the desired width */
+    object-fit: cover; /* This will cover the area without stretching the image */
+}
+
 .actions {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
 }
 
     .actions .btn {
-        margin-bottom: 10px;
+        width: auto !important; /* Override any specific width settings */
+        padding: 0.5em 1em; /* Adjust the padding as needed */
+        display: inline-block; /* Allows the button to shrink to the size of its content */
     }
 
 .product-description {
@@ -463,14 +474,6 @@ main {
     flex-basis: 100%;
 }
 
-.actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    margin-top: 20px;
-}
-
 .product-image {
     order: -1; /* Places the image above the other content */
     margin-bottom: 20px;
@@ -478,16 +481,23 @@ main {
 
     .product-image img {
         max-width: 100%;
-        height: auto;
+        height: 180px;
         object-fit: contain;
         max-height: 300px;
     }
 
 .btn {
-    padding: 10px 20px;
+    padding: 0.5em 1em;
+    width: auto;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
+    padding: 8px 16px;
+    background-color: #BDBDBD; /* A light gray */
+    color: #000;
+    text-decoration: none;
+    border: none;
+    margin: 0 10px;
 }
 
 .btn-add-to-cart {
@@ -724,17 +734,6 @@ main {
     margin-bottom: 20px;
 }
 
-/* Pagination button styles */
-.btn {
-    padding: 8px 16px;
-    background-color: #FFEE49; /* Header's yellow color */
-    color: #000;
-    text-decoration: none;
-    border: none;
-    border-radius: 5px;
-    margin: 0 10px;
-}
-
     .btn.disabled, .btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -802,3 +801,143 @@ main {
         .centered-about p:last-of-type {
             margin-top: 2em;
         }
+
+/* Styles specific to checkout box */
+.checkout-box {
+    display: flex;
+    flex-direction: column;
+    padding: 0 15px; /* Adjust the padding as needed for spacing on the sides */
+    box-sizing: border-box; /* Makes sure the padding doesn't add to the width */
+}
+
+    .checkout-box .cart-summary .cart-item {
+        padding-bottom: 10px; /* Adds space between cart items */
+    }
+
+    .checkout-box .order-total {
+        align-self: flex-end;
+        padding-top: 10px; /* Adds top padding */
+    }
+
+    .checkout-box .checkout-actions {
+        align-self: flex-end;
+        margin-top: 20px; /* Adds space between the total and the button */
+    }
+
+    .checkout-box .cart-summary {
+        flex-grow: 1; /* Allows cart summary to fill the space */
+    }
+
+    .checkout-box h1 {
+        font-size: 2rem; /* Larger font size for the title */
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+.order-success-popup {
+    text-align: center; /* Centers the text */
+    padding-top: 20px; /* Adds space at the top */
+}
+
+    .order-success-popup h1 {
+        font-size: 2em; /* Adjusts the size of the h1 element */
+        margin-top: 0.5em; /* Adds space above the h1 element */
+    }
+
+    .order-success-popup p {
+        font-size: 1.25em; /* Makes the paragraph text larger */
+        margin: 1em 0; /* Adds space above and below the paragraph text */
+    }
+
+    .order-success-popup .btn {
+        margin-top: 2em; /* Adds space above the button */
+        /* Centers the button. Adjust margin as needed if button has width */
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+/* Base styles for the cart page */
+.cart-page-container {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background: #f9f9f9;
+    padding: 20px;
+}
+
+    /* Style for the cart container */
+    .cart-page-container .cart-container {
+        max-width: 800px;
+        margin: auto;
+        background: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px;
+    }
+
+    /* Style for each item in the cart */
+    .cart-page-container .cart-item-container {
+        border-bottom: 1px solid #e1e1e1;
+        padding: 10px 0;
+    }
+
+    /* Style for item images */
+    .cart-page-container .cart-item-image img {
+        width: 100px; /* Fixed width for consistency */
+        height: 180px;
+        display: block;
+        margin: auto;
+    }
+
+    /* Style for item details */
+    .cart-page-container .cart-item-details {
+        margin-left: 20px;
+    }
+
+        .cart-page-container .cart-item-details h3 {
+            margin-top: 0;
+            color: #0056b3;
+        }
+
+    .cart-page-container .cart-item-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Style for quantity and price area */
+    .cart-page-container .cart-quantity,
+    .cart-page-container .cart-price {
+        font-size: 1.2rem;
+        color: #555;
+    }
+
+    /* Style for the checkout button */
+    .cart-page-container .cart-actions a {
+        display: block;
+        width: fit-content;
+        margin: 20px auto;
+        padding: 10px 20px;
+        text-align: center;
+        background-color: #0056b3;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+/* Adjustments for mobile view */
+@media (max-width: 768px) {
+    .cart-page-container .cart-container {
+        width: 95%;
+        margin: 10px auto;
+    }
+
+    .cart-page-container .cart-item-container {
+        display: block;
+    }
+
+    .cart-page-container .cart-item-image img {
+        width: auto;
+        max-width: 100%;
+        height: 180px;
+    }
+}

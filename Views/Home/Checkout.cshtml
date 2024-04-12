@@ -5,13 +5,9 @@
 
 }
 
-
-
-<h2>Checkout</h2>
-
-<div class="container">
-
-
+<div class="checkout-box">
+    <h1>Checkout</h1>
+    <br/>
     <div class="cart-summary">
         @foreach (var item in Model.CartItems)
         {
@@ -24,18 +20,13 @@
             </div>
             <br />
         }
-        <br />
-        <div class="order-total">
-            <h4>Total Amount: @Model.TotalAmount.ToString("C")</h4>
-        </div>
-
-        <div class="checkout-actions">
-            <form asp-action="PlaceOrder" method="post">
-                <button type="submit" class="btn btn-primary">Place Order</button>
-            </form>
-        </div>
-
     </div>
-
-   
+    <div class="order-total">
+        <h4>Total Amount: @Model.TotalAmount.ToString("C")</h4>
+    </div>
+    <div class="checkout-actions">
+        <form asp-action="PlaceOrder" method="post">
+            <button type="submit" class="btn btn-primary">Place Order</button>
+        </form>
+    </div>
 </div>

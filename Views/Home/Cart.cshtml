@@ -4,8 +4,10 @@
     ViewData["Title"] = "Cart";
 }
 
-<div class="container">
-    <h2>Your Cart</h2>
+<div class="cart-styles">
+    <!-- Add this class to the top-level container -->
+
+    <h1>Cart</h1>
 
     @if (Model.Count() == 0)
     {
@@ -38,11 +40,12 @@
                         </div>
                     </div>
                 </div>
+                <br />
             }
-            <br /><br />
-            <div class="cart-actions">
-                <a href="@Url.Action("Checkout", "Home")" class="btn btn-primary">Continue to Payment</a>
-            </div>
+        </div>
+        <div class="cart-actions">
+            <a href="@Url.Action("Checkout", "Home")" class="btn btn-primary">Continue to Payment</a>
         </div>
     }
+
 </div>

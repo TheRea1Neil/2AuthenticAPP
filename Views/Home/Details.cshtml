@@ -52,8 +52,13 @@
                     <input type="hidden" name="productId" value="@Model.ProductId" />
                     <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
                 </form>
-                <a asp-action="UpdateProduct" asp-route-id="@Model.ProductId" class="btn btn-primary">Update</a>
-                <a asp-action="DeleteProduct" asp-route-id="@Model.ProductId" class="btn btn-danger">Delete</a>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="UpdateProduct" asp-route-id="@Model.ProductId" class="btn btn-primary">Update</a>
+                    <a asp-action="DeleteProduct" asp-route-id="@Model.ProductId" class="btn btn-danger">Delete</a>
+                }
+
             </div>
         </div>
         <div class="product-image">
@@ -61,6 +66,10 @@
         </div>
     </div>
 </div>
+@* 
+<div>
+    @ViewBag.Recommendations.Recommendation1
+</div> *@
 
 <div class="product-details-card">
     <div class="product-header">

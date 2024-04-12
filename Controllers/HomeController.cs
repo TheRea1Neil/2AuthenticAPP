@@ -36,7 +36,7 @@ namespace _2AuthenticAPP.Controllers
             _inferenceSession = new InferenceSession("GradientBoostingClassifier_model.onnx");
         }
 
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9, string category = null, int? minParts = null, int? maxParts = null, decimal? minPrice = null, decimal? maxPrice = null, string primaryColor = null, string secondaryColor = null)
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9, string category = null, int? minParts = null, int? maxParts = null, decimal? minPrice = null, decimal? maxPrice = null, string primaryColor = null, string secondaryColor = null, string showOption = "all")
         {
             var productsQuery = _productRepo.Products
                 .Select(p => new ProductViewModel
@@ -90,6 +90,23 @@ namespace _2AuthenticAPP.Controllers
                 productsQuery = productsQuery.Where(p => p.SecondaryColor == secondaryColor);
             }
 
+            // Apply show option filter
+            switch (showOption)
+            {
+                case "6":
+                    pageSize = 6;
+                    break;
+                case "12":
+                    pageSize = 12;
+                    break;
+                case "18":
+                    pageSize = 18;
+                    break;
+                default:
+                    // Show All (default 9 per page)
+                    break;
+            }
+
             // Pagination logic
             var paginatedProducts = await PaginatedList<ProductViewModel>.CreateAsync(productsQuery, pageNumber, pageSize);
 
@@ -101,6 +118,7 @@ namespace _2AuthenticAPP.Controllers
             ViewBag.SelectedMaxPrice = maxPrice;
             ViewBag.SelectedPrimaryColor = primaryColor;
             ViewBag.SelectedSecondaryColor = secondaryColor;
+            ViewBag.ShowOption = showOption;
 
             // Fetch and process categories
             var allCategories = await _context.Products
@@ -133,7 +151,7 @@ namespace _2AuthenticAPP.Controllers
 
             return View(paginatedProducts);
         }
-
+         
         public async Task<IActionResult> Details(int id)
         {
             var product = await _context.Products
@@ -157,43 +175,32 @@ namespace _2AuthenticAPP.Controllers
                 return NotFound();
             }
 
-            // Calculate average rating
-            product.AverageRating = await _context.LineItems
-                .Where(li => li.ProductId == product.ProductId)
-                .AverageAsync(li => (double?)li.Rating) ?? 0.0;
+            //// Calculate average rating
+            //product.AverageRating = await _context.LineItems
+            //    .Where(li => li.ProductId == product.ProductId)
+            //    .AverageAsync(li => (double?)li.Rating) ?? 0.0;
 
-            
-            // These are the products recommended for the individual product based on content filtering model 
-            var recommendedProducts = _context.ItemBasedRecommendations
-                .Where(rp => rp.ProductId == product.ProductId)
-                .Select(rp => new ItemBasedRecommendation
-                {
-                    ProductId = (byte)product.ProductId,
-                    Name = rp.Name,
-                    Recommendation1 = rp.Recommendation1,
-                    Recommendation2 = rp.Recommendation2,
-                    Recommendation3 = rp.Recommendation3,
-                    Recommendation4 = rp.Recommendation4,
-                    Recommendation5 = rp.Recommendation5,
-                    Recommendation6 = rp.Recommendation6,
-                    Recommendation7 = rp.Recommendation7,
-                    Recommendation8 = rp.Recommendation8,
-                    Recommendation9 = rp.Recommendation9,
-                    Recommendation10 = rp.Recommendation10
-                }).FirstOrDefault();
+            //// These are the products recommended for the individual product based on content filtering model 
+            //var recommendedProducts = _context.ItemBasedRecommendations
+            //    .Where(rp => rp.ProductId == product.ProductId)
+            //    .Select(rp => new ItemBasedRecommendation
+            //    {
+            //        ProductId = (byte)product.ProductId,
+            //        Name = rp.Name,
+            //        Recommendation1 = rp.Recommendation1,
+            //        Recommendation2 = rp.Recommendation2,
+            //        Recommendation3 = rp.Recommendation3,
+            //        Recommendation4 = rp.Recommendation4,
+            //        Recommendation5 = rp.Recommendation5,
+            //        Recommendation6 = rp.Recommendation6,
+            //        Recommendation7 = rp.Recommendation7,
+            //        Recommendation8 = rp.Recommendation8,
+            //        Recommendation9 = rp.Recommendation9,
+            //        Recommendation10 = rp.Recommendation10
+            //    }).FirstOrDefault();
 
-            for (int i = 1; i <= 10; i++)
-            {
-                var propertyName = $"Recommendation{i}";
-                var propertyValue = recommendedProducts.GetType().GetProperty(propertyName)?.GetValue(recommendedProducts);
-                if (propertyValue != null && propertyValue is string recommendation)
-                {
-                    product.Recommendations.Add(_context.Products.FirstOrDefault(p => p.Name == recommendation));
-                }
-            }
+            //ViewBag.Recommendations = recommendedProducts;
 
-            ViewBag.Recommendations = recommendedProducts;
-            
             return View(product);
         }
 
