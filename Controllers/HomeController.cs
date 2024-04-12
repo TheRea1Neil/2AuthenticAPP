@@ -620,7 +620,7 @@ namespace _2AuthenticAPP.Controllers
                 }
                 else
                 {
-                    ViewBag.Prediction = "Error: Unable to make a prediction.";
+                    ViewBag.Prediction = "Error: Please contact our staff to place you order. Call: 111-222-5555";
                 }
             }
 

@@ -5,8 +5,12 @@ namespace _2AuthenticAPP.Models;
 
 public partial class Product
 {
-    public int ProductId { get; set; }
+        public Product()
+        {
+            LineItems = new HashSet<LineItem>();
+        }
 
+        public int ProductId { get; set; }
     public string? Name { get; set; }
 
     public short? Year { get; set; }
@@ -22,6 +26,9 @@ public partial class Product
     public string? SecondaryColor { get; set; }
 
     public string? Description { get; set; }
-
     public string? Category { get; set; }
+
+    // Add the inverse navigation property
+    public virtual ICollection<LineItem> LineItems { get; set; }
+    
 }
