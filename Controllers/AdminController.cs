@@ -5,6 +5,10 @@ using _2AuthenticAPP.Data;
 using _2AuthenticAPP.Models;
 using _2AuthenticAPP.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.ML;
+using Microsoft.ML.OnnxRuntime;
+using Microsoft.ML.OnnxRuntime.Tensors;
+using Microsoft.AspNetCore.Http;
 
 namespace _2AuthenticAPP.Controllers
 {
@@ -13,6 +17,8 @@ namespace _2AuthenticAPP.Controllers
         private readonly BorchardtDbContext _context;
         private readonly UserRolesService _userRolesService;
         private readonly UserManager<IdentityUser> _userManager; // Add this line
+
+        private readonly InferenceSession _inferenceSession;
 
         // Modify the constructor to include UserManager<IdentityUser>
         public AdminController(BorchardtDbContext context, UserRolesService userRolesService, UserManager<IdentityUser> userManager)
@@ -202,6 +208,98 @@ namespace _2AuthenticAPP.Controllers
 
             return View(viewModel);
         }
-        // Add more admin-specific actions as needed
+        // Add more admin-specific methods as needed
+
+        // Prediction Realm
+        public IActionResult Orders()
+        {
+            var records = _context.Orders.ToList();  // Fetch all records
+            var predictions = new OrderViewModel();  // Your ViewModel for the view
+
+            // Dictionary mapping the numeric prediction to an animal type
+            var class_type_dict = new Dictionary<int, string>
+            {
+                { 0, "Valid" },
+                { 1, "Fraud" }
+            };
+
+
+            var january1_2023 = new DateTime(2023, 1, 1);
+
+            foreach (var record in records)
+            {
+                // Calculate days since January 1, 2023
+                var daySinceJan12023 = record.Date.HasValue ? Math.Abs((record.Date.Value - january1_2023).Days) : 0;
+
+
+                //Preprocess features to make them conpatible with our prediction model
+                var input = new List<float>
+                {
+                    (float)record.CustomerId,
+                    (float)daySinceJan12023,
+                    (float)record.Time,
+                    (float)(record.Amount ?? 0),
+
+                    // Check the dummy coded data
+                    // Deal with week day
+                    record.DayOfWeek == "Mon" ? 1 : 0,
+                    record.DayOfWeek == "Sat" ? 1 : 0,
+                    record.DayOfWeek == "Sun" ? 1 : 0,
+                    record.DayOfWeek == "Thu" ? 1 : 0,
+                    record.DayOfWeek == "Tue" ? 1 : 0,
+                    record.DayOfWeek == "Wed" ? 1 : 0,
+
+                    //Entry Mode
+                    record.EntryMode == "PIN" ? 1 : 0,
+                    record.EntryMode == "Tap" ? 1 : 0,
+
+                    // Transaction Type
+                    record.TypeOfTransaction == "Online" ? 1 : 0,
+                    record.TypeOfTransaction == "POS" ? 1 : 0,
+
+                    // Country of Transaction
+                    record.CountryOfTransaction == "Indian" ? 1 : 0,
+                    record.CountryOfTransaction == "Russia" ? 1 : 0,
+                    record.CountryOfTransaction == "USA" ? 1 : 0,
+                    record.CountryOfTransaction == "United Kingdom" ? 1 : 0,
+
+                    //Shipping Address
+                    (record.ShippingAddress ?? record.CountryOfTransaction) == "India" ? 1 : 0,
+                    (record.ShippingAddress ?? record.CountryOfTransaction) == "Russia" ? 1 : 0,
+                    (record.ShippingAddress ?? record.CountryOfTransaction) == "USA" ? 1 : 0,
+                    (record.ShippingAddress ?? record.CountryOfTransaction) == "United Kingdom" ? 1 : 0,
+
+                    // Bank
+                    record.Bank == "HSBC" ? 1 : 0,
+                    record.Bank == "Halifax" ? 1 : 0,
+                    record.Bank == "Lloyds" ? 1 : 0,
+                    record.Bank == "Metro" ? 1 : 0,
+                    record.Bank == "Monzo" ? 1 : 0,
+                    record.Bank == "RBS" ? 1 : 0,
+
+                    // Type of Card
+                    record.TypeOfCard == "Visa" ? 1 : 0,
+                };
+
+                var inputTensor = new DenseTensor<float>(input.ToArray(), new[] { 1, input.Count });
+
+                var inputs = new List<NamedOnnxValue>
+                {
+                    NamedOnnxValue.CreateFromTensor("float_input", inputTensor)
+                };
+
+                string predictionResult;
+                using (var results = _inferenceSession.Run(inputs))
+                {
+                    var prediction = results.FirstOrDefault(item => item.Name == "output_label")?.AsTensor<long>().ToArray();
+                    predictionResult = prediction != null && prediction.Length > 0 ? class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown") : "Error in prediction";
+                }
+
+                //predictions.Orders.Add(new AnimalPrediction { Animal = record, Prediction = predictionResult }); // Adds the animal information and prediction for that animal to AnimalPrediction viewmodel
+                //predictions.
+            }
+
+            return View(predictions);
+        }
     }
 }

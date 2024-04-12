@@ -9,6 +9,10 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using _2AuthenticAPP.Models.ViewModels;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.ML;
+using Microsoft.ML.OnnxRuntime;
+using Microsoft.ML.OnnxRuntime.Tensors;
+using Microsoft.AspNetCore.Http;
 
 namespace _2AuthenticAPP.Controllers
 {
@@ -18,14 +22,21 @@ namespace _2AuthenticAPP.Controllers
         private readonly BorchardtDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(IProductRepository productRepo, BorchardtDbContext context, UserManager<IdentityUser> userManager)
+        private readonly InferenceSession _inferenceSession;
+        //private readonly string _onnxModelPath;
+
+        public HomeController(IProductRepository productRepo, BorchardtDbContext context, UserManager<IdentityUser> userManager) //, IHostEnvironment hostEnvironment
         {
             _productRepo = productRepo;
             _context = context;
             _userManager = userManager;
-        }
-       
+            //_onnxModelPath = System.IO.Path.Combine(hostEnvironment.ContentRootPath, "GradientBoostingClassifier_model.onnx");
 
+            // Initialize the InferenceSession here;
+            _inferenceSession = new InferenceSession("C:\\Users\\sdhjk\\source\\repos\\2AuthenticAPP\\GradientBoostingClassifier_model.onnx");
+        }
+
+        
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9)
         {
             var productsQuery = _productRepo.Products
@@ -424,6 +435,60 @@ namespace _2AuthenticAPP.Controllers
         public IActionResult Secrets()
         {
             return View();
+        }
+
+        // Perdiction Realm
+        // A single perdiction
+        [HttpPost]
+        public IActionResult Predict(int customerId, DateOnly date, string dayOfWeek, int time, string entryMode, float amount , string typeOfTrans, string countryOfTrans, string shippingAddress, string bank, string typeOfCard)
+        {
+            // Dictionary mapping the numeric prediction to string
+            var class_type_dict = new Dictionary<int, string>
+            {
+                { 0, "Valid" },
+                { 1, "Fraud" }
+            };
+
+            // Calculate days since January 1, 2023
+
+            var january1_2023 = new DateOnly(2023, 1, 1);
+
+
+
+            try
+            {
+                var input = new List<float> { hair, feathers, eggs, milk, airborne, aquatic, predator, toothed, backbone, breathes, venomous, fins, legs, tail, domestic, catsize };
+                var inputTensor = new DenseTensor<float>(input.ToArray(), new[] { 1, input.Count });
+
+                var inputs = new List<NamedOnnxValue>
+                {
+                    NamedOnnxValue.CreateFromTensor("float_input", inputTensor)
+                };
+
+                using (var results = _session.Run(inputs)) // makes the prediction with the inputs from the form (i.e. class_type 1-7)
+                {
+                    var prediction = results.FirstOrDefault(item => item.Name == "output_label")?.AsTensor<long>().ToArray();
+                    if (prediction != null && prediction.Length > 0)
+                    {
+                        // Use the prediction to get the animal type from the dictionary
+                        var animalType = class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown");
+                        ViewBag.Prediction = animalType;
+                    }
+                    else
+                    {
+                        ViewBag.Prediction = "Error: Unable to make a prediction.";
+                    }
+                }
+
+                _logger.LogInformation("Prediction executed successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error during prediction: {ex.Message}");
+                ViewBag.Prediction = "Error during prediction.";
+            }
+
+            return View("Index");
         }
     }
 }

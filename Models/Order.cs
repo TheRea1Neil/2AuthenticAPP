@@ -12,7 +12,7 @@ namespace _2AuthenticAPP.Models
 
         public int TransactionId { get; set; }
         public int? CustomerId { get; set; }
-        public DateOnly? Date { get; set; }
+        public DateTime? Date { get; set; }
         public string? DayOfWeek { get; set; }
         public byte? Time { get; set; }
         public string? EntryMode { get; set; }
