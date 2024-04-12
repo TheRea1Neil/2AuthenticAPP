@@ -90,15 +90,10 @@ app.Use(async (context, next) =>
 });
 
 //HSTS set up
-if (app.Environment.IsDevelopment())
-{
-    app.UseMigrationsEndPoint();
-}
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
+
+
+app.UseHsts();
+
 
 
 app.UseHttpsRedirection();
