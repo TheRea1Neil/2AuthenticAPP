@@ -171,7 +171,7 @@ namespace _2AuthenticAPP.Controllers
 
         public async Task<IActionResult> Orders(string searchString, bool showFraudOnly = false, int? pageNumber = 1)
         {
-            int pageSize = 10;
+            int pageSize = 50;
 
             var orders = _context.Orders
                 .Include(o => o.Customer) // Include the Customer navigation property
