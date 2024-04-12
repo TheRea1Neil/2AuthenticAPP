@@ -319,7 +319,7 @@ namespace _2AuthenticAPP.Controllers
                     var order = new Order
                     {
                         CustomerId = customer.CustomerId,
-                        Date = DateOnly.FromDateTime(DateTime.Now),
+                        Date = DateTime.Now,
                         DayOfWeek = DateTime.Now.DayOfWeek.ToString(),
                         Time = (byte)DateTime.Now.Hour,
                         EntryMode = "Online",
@@ -439,56 +439,56 @@ namespace _2AuthenticAPP.Controllers
 
         // Perdiction Realm
         // A single perdiction
-        [HttpPost]
-        public IActionResult Predict(int customerId, DateOnly date, string dayOfWeek, int time, string entryMode, float amount , string typeOfTrans, string countryOfTrans, string shippingAddress, string bank, string typeOfCard)
-        {
-            // Dictionary mapping the numeric prediction to string
-            var class_type_dict = new Dictionary<int, string>
-            {
-                { 0, "Valid" },
-                { 1, "Fraud" }
-            };
+        //[HttpPost]
+        //public IActionResult Predict(int customerId, DateOnly date, string dayOfWeek, int time, string entryMode, float amount , string typeOfTrans, string countryOfTrans, string shippingAddress, string bank, string typeOfCard)
+        //{
+        //    // Dictionary mapping the numeric prediction to string
+        //    var class_type_dict = new Dictionary<int, string>
+        //    {
+        //        { 0, "Valid" },
+        //        { 1, "Fraud" }
+        //    };
 
-            // Calculate days since January 1, 2023
+        //    // Calculate days since January 1, 2023
 
-            var january1_2023 = new DateOnly(2023, 1, 1);
+        //    var january1_2023 = new DateOnly(2023, 1, 1);
 
 
 
-            try
-            {
-                var input = new List<float> { hair, feathers, eggs, milk, airborne, aquatic, predator, toothed, backbone, breathes, venomous, fins, legs, tail, domestic, catsize };
-                var inputTensor = new DenseTensor<float>(input.ToArray(), new[] { 1, input.Count });
+        //    try
+        //    {
+        //        var input = new List<float> { hair, feathers, eggs, milk, airborne, aquatic, predator, toothed, backbone, breathes, venomous, fins, legs, tail, domestic, catsize };
+        //        var inputTensor = new DenseTensor<float>(input.ToArray(), new[] { 1, input.Count });
 
-                var inputs = new List<NamedOnnxValue>
-                {
-                    NamedOnnxValue.CreateFromTensor("float_input", inputTensor)
-                };
+        //        var inputs = new List<NamedOnnxValue>
+        //        {
+        //            NamedOnnxValue.CreateFromTensor("float_input", inputTensor)
+        //        };
 
-                using (var results = _session.Run(inputs)) // makes the prediction with the inputs from the form (i.e. class_type 1-7)
-                {
-                    var prediction = results.FirstOrDefault(item => item.Name == "output_label")?.AsTensor<long>().ToArray();
-                    if (prediction != null && prediction.Length > 0)
-                    {
-                        // Use the prediction to get the animal type from the dictionary
-                        var animalType = class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown");
-                        ViewBag.Prediction = animalType;
-                    }
-                    else
-                    {
-                        ViewBag.Prediction = "Error: Unable to make a prediction.";
-                    }
-                }
+        //        using (var results = _session.Run(inputs)) // makes the prediction with the inputs from the form (i.e. class_type 1-7)
+        //        {
+        //            var prediction = results.FirstOrDefault(item => item.Name == "output_label")?.AsTensor<long>().ToArray();
+        //            if (prediction != null && prediction.Length > 0)
+        //            {
+        //                // Use the prediction to get the animal type from the dictionary
+        //                var animalType = class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown");
+        //                ViewBag.Prediction = animalType;
+        //            }
+        //            else
+        //            {
+        //                ViewBag.Prediction = "Error: Unable to make a prediction.";
+        //            }
+        //        }
 
-                _logger.LogInformation("Prediction executed successfully.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error during prediction: {ex.Message}");
-                ViewBag.Prediction = "Error during prediction.";
-            }
+        //        _logger.LogInformation("Prediction executed successfully.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Error during prediction: {ex.Message}");
+        //        ViewBag.Prediction = "Error during prediction.";
+        //    }
 
-            return View("Index");
-        }
+        //    return View("Index");
+        //}
     }
 }

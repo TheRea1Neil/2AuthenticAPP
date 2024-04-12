@@ -295,8 +295,8 @@ namespace _2AuthenticAPP.Controllers
                     predictionResult = prediction != null && prediction.Length > 0 ? class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown") : "Error in prediction";
                 }
 
-                //predictions.Orders.Add(new AnimalPrediction { Animal = record, Prediction = predictionResult }); // Adds the animal information and prediction for that animal to AnimalPrediction viewmodel
-                //predictions.
+                predictions.Orders.Add(record); // Adds the order information and prediction for that order to OrdersViewModel
+                predictions.FraudPrediction = predictionResult;
             }
 
             return View(predictions);
