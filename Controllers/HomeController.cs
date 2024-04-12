@@ -167,7 +167,7 @@ namespace _2AuthenticAPP.Controllers
                     NumParts = p.NumParts.HasValue ? (int)p.NumParts.Value : (int?)null,
                     PrimaryColor = p.PrimaryColor,
                     SecondaryColor = p.SecondaryColor,
-                    Category = p.Category
+                    Category = p.Category               
                 }).FirstOrDefaultAsync();
 
             if (product == null)
