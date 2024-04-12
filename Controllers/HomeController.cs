@@ -24,9 +24,9 @@ namespace _2AuthenticAPP.Controllers
             _context = context;
             _userManager = userManager;
         }
-       
 
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9)
+
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9, string category = null, int? minParts = null, int? maxParts = null, decimal? minPrice = null, decimal? maxPrice = null, string primaryColor = null, string secondaryColor = null)
         {
             var productsQuery = _productRepo.Products
                 .Select(p => new ProductViewModel
@@ -37,40 +37,78 @@ namespace _2AuthenticAPP.Controllers
                     ImgLink = p.ImgLink,
                     AverageRating = _context.LineItems
                         .Where(li => li.ProductId == p.ProductId)
-                        .Average(li => (int?)li.Rating)
+                        .Average(li => (int?)li.Rating),
+                    Category = p.Category,
+                    NumParts = p.NumParts,
+                    PrimaryColor = p.PrimaryColor,
+                    SecondaryColor = p.SecondaryColor
                 });
+
+            // Apply filters
+            if (!string.IsNullOrEmpty(category))
+            {
+                productsQuery = productsQuery.Where(p => p.Category.Contains(category));
+            }
+
+            if (minParts.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.NumParts >= minParts.Value);
+            }
+
+            if (maxParts.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.NumParts <= maxParts.Value);
+            }
+
+            if (minPrice.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            if (!string.IsNullOrEmpty(primaryColor))
+            {
+                productsQuery = productsQuery.Where(p => p.PrimaryColor == primaryColor);
+            }
+
+            if (!string.IsNullOrEmpty(secondaryColor))
+            {
+                productsQuery = productsQuery.Where(p => p.SecondaryColor == secondaryColor);
+            }
 
             // Pagination logic
             var paginatedProducts = await PaginatedList<ProductViewModel>.CreateAsync(productsQuery, pageNumber, pageSize);
 
-            if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                // Get the IdentityUser object for the logged-in user
-                IdentityUser user = await _userManager.GetUserAsync(User);
+            // Set ViewBag values for selected filter options
+            ViewBag.SelectedCategory = category;
+            ViewBag.SelectedMinParts = minParts;
+            ViewBag.SelectedMaxParts = maxParts;
+            ViewBag.SelectedMinPrice = minPrice;
+            ViewBag.SelectedMaxPrice = maxPrice;
+            ViewBag.SelectedPrimaryColor = primaryColor;
+            ViewBag.SelectedSecondaryColor = secondaryColor;
 
-                // Query the database to find the customer with the matching email
-                var customer = await _context.Customers
-                                             .FirstOrDefaultAsync(c => c.Email == user.Email);
-            }
-
-            // Assuming '_context' is your DbContext and 'Products' is your DbSet<Product>
-            // This part of your code fetches and processes the categories.
+            // Fetch and process categories
             var allCategories = await _context.Products
-                              .Select(p => p.Category)
-                              .ToListAsync(); // Make sure 'Category' is the correct property name.
+                .Select(p => p.Category)
+                .ToListAsync();
 
             var uniqueCategories = allCategories
-                              .SelectMany(c => c.Split('-')) // This assumes categories are pipe-separated.
-                              .Select(c => c.Trim())
-                              .Distinct()
-                              .ToList();
+                .SelectMany(c => c.Split('-'))
+                .Select(c => c.Trim())
+                .Distinct()
+                .ToList();
 
             ViewBag.Categories = uniqueCategories;
 
             // Fetch and process primary colors
             var allPrimaryColors = await _context.Products
                 .Select(p => p.PrimaryColor)
-                .Distinct() // Get distinct values
+                .Distinct()
                 .ToListAsync();
 
             ViewBag.PrimaryColors = allPrimaryColors;
@@ -78,7 +116,7 @@ namespace _2AuthenticAPP.Controllers
             // Fetch and process secondary colors
             var allSecondaryColors = await _context.Products
                 .Select(p => p.SecondaryColor)
-                .Distinct() // Get distinct values
+                .Distinct()
                 .ToListAsync();
 
             ViewBag.SecondaryColors = allSecondaryColors;
