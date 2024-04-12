@@ -4,18 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using SendGrid.Extensions.DependencyInjection;
-using Azure.Identity;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
-//var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
-//builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
-
 var services = builder.Services;
 var configuration = builder.Configuration;
-//// Assuming your API Key is used here for demonstration:
-//var apiKey = builder.Configuration["ApiKey"];  // Retrieve the API key from configuration
+// Assuming your API Key is used here for demonstration:
+var apiKey = builder.Configuration["ApiKey"];  // Retrieve the API key from configuration
 
 services.AddAuthentication().AddGoogle(googleOptions =>
 {
@@ -24,7 +19,7 @@ services.AddAuthentication().AddGoogle(googleOptions =>
 });
 
 // Add services to the container.
-var connectionString = configuration["DefaultConnection"] ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -38,19 +33,11 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<UserRolesService>();
 
-builder.Logging.AddConsole();
-
-builder.Services.Configure<SendGridSettings>(options =>
-{
-    options.FromEmail = builder.Configuration["SendGridSettings:FromEmail"];
-    options.EmailName = builder.Configuration["SendGridSettings:EmailName"];
-    options.ApiKey = builder.Configuration["SendGridSettings:ApiKey"];
-});
-
+builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGridSettings"));
 
 builder.Services.AddSendGrid(options =>
 {
-    options.ApiKey = configuration["SendGridSettings:ApiKey"];
+    options.ApiKey = builder.Configuration.GetSection("SendGridSettings").GetValue<string>("ApiKey");
 });
 
 builder.Services.AddScoped<IEmailSender, EmailSenderService>();
@@ -91,8 +78,6 @@ app.Use(async (context, next) =>
 
 
 
-
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCookiePolicy();
@@ -106,6 +91,7 @@ app.UseEndpoints(endpoints =>
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
 });
+
 
 app.MapRazorPages();
 
