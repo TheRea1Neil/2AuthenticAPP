@@ -12,33 +12,4 @@
         <p>Date: @Model.Date</p>
         <p>Total Amount: @Model.Amount.Value.ToString("C")</p>
     </div>
-
-    <table class="table table-hover">
-        <!-- Add Bootstrap table classes for styling -->
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var lineItem in Model.LineItems)
-            {
-                <tr>
-                    <td>@lineItem.Product.Name</td>
-                    <td>@lineItem.Qty</td>
-                    <td>@lineItem.Product.Price.Value.ToString("C")</td>
-                    <td>
-                        <a href="@Url.Action("ProductDetails", "Home", new { id = lineItem.Product.ProductId })" class="btn btn-primary">View Product</a>
-                        <form asp-action="AddToCart" method="post" style="display:inline;">
-                            <input type="hidden" name="productId" value="@lineItem.Product.ProductId" />
-                            <button type="submit" class="btn btn-primary">Add to Cart</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 </div>
