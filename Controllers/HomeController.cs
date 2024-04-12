@@ -36,7 +36,7 @@ namespace _2AuthenticAPP.Controllers
             _inferenceSession = new InferenceSession("GradientBoostingClassifier_model.onnx");
         }
 
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9, string category = null, int? minParts = null, int? maxParts = null, decimal? minPrice = null, decimal? maxPrice = null, string primaryColor = null, string secondaryColor = null)
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9, string category = null, int? minParts = null, int? maxParts = null, decimal? minPrice = null, decimal? maxPrice = null, string primaryColor = null, string secondaryColor = null, string showOption = "all")
         {
             var productsQuery = _productRepo.Products
                 .Select(p => new ProductViewModel
@@ -90,6 +90,23 @@ namespace _2AuthenticAPP.Controllers
                 productsQuery = productsQuery.Where(p => p.SecondaryColor == secondaryColor);
             }
 
+            // Apply show option filter
+            switch (showOption)
+            {
+                case "6":
+                    pageSize = 6;
+                    break;
+                case "12":
+                    pageSize = 12;
+                    break;
+                case "18":
+                    pageSize = 18;
+                    break;
+                default:
+                    // Show All (default 9 per page)
+                    break;
+            }
+
             // Pagination logic
             var paginatedProducts = await PaginatedList<ProductViewModel>.CreateAsync(productsQuery, pageNumber, pageSize);
 
@@ -101,6 +118,7 @@ namespace _2AuthenticAPP.Controllers
             ViewBag.SelectedMaxPrice = maxPrice;
             ViewBag.SelectedPrimaryColor = primaryColor;
             ViewBag.SelectedSecondaryColor = secondaryColor;
+            ViewBag.ShowOption = showOption;
 
             // Fetch and process categories
             var allCategories = await _context.Products
