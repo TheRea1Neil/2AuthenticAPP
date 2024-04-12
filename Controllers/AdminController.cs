@@ -265,7 +265,7 @@ namespace _2AuthenticAPP.Controllers
             var classTypeDict = new Dictionary<int, string>
             {
                 { 0, "Valid" },
-                { 1, "Fraud" }
+                { 1, "Suspicious" }
             };
 
             var january1_2023 = new DateTime(2023, 1, 1);
