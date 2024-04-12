@@ -834,3 +834,26 @@ main {
         margin-bottom: 1rem;
         text-align: center;
     }
+
+.order-success-popup {
+    text-align: center; /* Centers the text */
+    padding-top: 20px; /* Adds space at the top */
+}
+
+    .order-success-popup h1 {
+        font-size: 2em; /* Adjusts the size of the h1 element */
+        margin-top: 0.5em; /* Adds space above the h1 element */
+    }
+
+    .order-success-popup p {
+        font-size: 1.25em; /* Makes the paragraph text larger */
+        margin: 1em 0; /* Adds space above and below the paragraph text */
+    }
+
+    .order-success-popup .btn {
+        margin-top: 2em; /* Adds space above the button */
+        /* Centers the button. Adjust margin as needed if button has width */
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
