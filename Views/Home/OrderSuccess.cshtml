@@ -3,15 +3,22 @@
 }
 
 
-@{
-    var buttonText = ViewBag.Prediction == "Valid" ? "Continue Shopping" : "Review Order";
-    var message = ViewBag.Prediction == "Valid"
-                  ? "Thank you for your purchase! Your order has been successfully placed."
-                  : "Order Submitted. Your order will be reviewed by our specialist.";
-}
+@* If the prediction appears to be a Valid transaction *@
+@if (ViewBag.Prediction == "Valid")
+{
+    <h2>Order Success</h2>
+    <div class="container">
+        <p>Thank you for your purchase! Your order has been successfully placed.</p>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Continue Shopping</a>
+    </div>
 
-<div class="order-success-popup">
-    <h1>Order Success</h1>
-    <p>@message</p>
-    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">@buttonText</a>
-</div>
+
+}
+else @* If the prediction appears to be a Suspicious transaction *@
+{
+    <h2>Order Received</h2>
+    <div class="container">
+        <p>Order Summitted. Your order will be reviewed by our specialist.</p>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Continue Shopping</a>
+    </div>
+}

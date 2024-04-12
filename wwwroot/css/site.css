@@ -373,6 +373,12 @@ main {
     margin-bottom: 10px;
 }
 
+.image-container img {
+    width: 200px; /* Set to the desired width */
+    height: 200px; /* Set to the desired height */
+    object-fit: cover; /* This will cover the area without stretching the image */
+}
+
 .actions {
     margin-top: 20px;
     display: flex;
@@ -383,7 +389,7 @@ main {
 }
 
     .actions .btn {
-        width: auto; /* Override any specific width settings */
+        width: auto !important; /* Override any specific width settings */
         padding: 0.5em 1em; /* Adjust the padding as needed */
         display: inline-block; /* Allows the button to shrink to the size of its content */
     }

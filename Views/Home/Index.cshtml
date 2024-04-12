@@ -42,15 +42,18 @@
         </div>
 
         <div class="form-group">
-            <label></label>
+            <label>Items per page:</label>
             <button type="submit" name="showOption" value="6" class="btn @(ViewBag.ShowOption == "6" ? "btn-primary" : "btn-secondary")">Show 6</button>
             <br />
+            <br />
             <button type="submit" name="showOption" value="12" class="btn @(ViewBag.ShowOption == "12" ? "btn-primary" : "btn-secondary")">Show 12</button>
+            <br />
             <br />
             <button type="submit" name="showOption" value="18" class="btn @(ViewBag.ShowOption == "18" ? "btn-primary" : "btn-secondary")">Show 18</button>
         </div>
 
-        <button type="submit" class="btn btn-primary">Apply Filters</button>
+        <button type="submit" class="btn btn-secondary">Apply Filters</button>
+        <br />
         <br />
         <a href="@Url.Action("Index")" class="btn btn-secondary">Clear Filters</a>
     </form>
@@ -63,7 +66,7 @@
             <div class="actions">
                 @if (User.IsInRole("Admin"))
                 {
-                    <a asp-action="AddProduct" class="btn btn-primary">Add Product</a>
+                    <a asp-action="AddProduct" class="btn btn-primary">+ Add Product</a>
                 }
             </div>
             <div class="pagination top-pagination">
