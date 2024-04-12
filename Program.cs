@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
+// Assuming your API Key is used here for demonstration:
+var apiKey = builder.Configuration["ApiKey"];  // Retrieve the API key from configuration
 
 services.AddAuthentication().AddGoogle(googleOptions =>
 {
