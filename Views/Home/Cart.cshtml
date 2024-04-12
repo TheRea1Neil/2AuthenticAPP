@@ -31,6 +31,7 @@
                     </div>
                     <div class="item-actions">
                         <span class="price">@item.Price.Value.ToString("C")</span>
+                        <br />
                         <button class="btn-remove" data-product-id="@item.ProductId" onclick="removeFromCart(@item.ProductId)">Remove</button>
                         <div class="quantity">
                             <button class="btn-decrease-qty" data-product-id="@item.ProductId" onclick="decreaseQuantity(@item.ProductId)">-</button>
