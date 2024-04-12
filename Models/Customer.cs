@@ -20,4 +20,6 @@ public partial class Customer
     public double? Age { get; set; }
 
     public string? Email { get; set; }
+
+    public virtual ICollection<Order> Orders { get; set; }
 }

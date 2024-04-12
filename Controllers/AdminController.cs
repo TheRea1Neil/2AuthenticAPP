@@ -3,19 +3,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using _2AuthenticAPP.Data;
 using _2AuthenticAPP.Models;
+using _2AuthenticAPP.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace _2AuthenticAPP.Controllers
 {
-    //[Authorize(Roles = "Admin")] not yet
     public class AdminController : Controller
     {
         private readonly BorchardtDbContext _context;
         private readonly UserRolesService _userRolesService;
+        private readonly UserManager<IdentityUser> _userManager; // Add this line
 
-        public AdminController(BorchardtDbContext context, UserRolesService userRolesService)
+        // Modify the constructor to include UserManager<IdentityUser>
+        public AdminController(BorchardtDbContext context, UserRolesService userRolesService, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userRolesService = userRolesService;
+            _userManager = userManager; // Set the _userManager
         }
 
         public async Task<IActionResult> MakeUserAdmin(string userId)
@@ -108,6 +112,7 @@ namespace _2AuthenticAPP.Controllers
 
             var customer = await _context.Customers
                 .FirstOrDefaultAsync(m => m.CustomerId == id);
+
             if (customer == null)
             {
                 return NotFound();
@@ -116,19 +121,86 @@ namespace _2AuthenticAPP.Controllers
             return View(customer);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
+            // Disable triggers on AspNetUsers table
+            await _context.Database.ExecuteSqlRawAsync("DISABLE TRIGGER ALL ON AspNetUsers");
+
+            try
+            {
+                var customer = await _context.Customers.FindAsync(id);
+                if (customer != null)
+                {
+                    var user = await _userManager.FindByEmailAsync(customer.Email);
+                    if (user != null)
+                    {
+                        // Perform user deletion
+                        var result = await _userManager.DeleteAsync(user);
+                        if (result.Succeeded)
+                        {
+                            // If user deletion succeeded, remove the customer
+                            _context.Customers.Remove(customer);
+                            await _context.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            // Consider how to handle the failure in your application context
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                // Re-enable triggers on AspNetUsers table regardless of the outcome
+                await _context.Database.ExecuteSqlRawAsync("ENABLE TRIGGER ALL ON AspNetUsers");
+            }
+
+            // Redirect to the customer list page or appropriate view
             return RedirectToAction(nameof(Customers));
         }
 
         private bool CustomerExists(int id)
         {
             return _context.Customers.Any(e => e.CustomerId == id);
+        }
+
+        public async Task<IActionResult> Orders(string searchString, bool showFraudOnly = false, int? pageNumber = 1)
+        {
+            int pageSize = 10;
+
+            var orders = _context.Orders
+                .Include(o => o.Customer) // Include the Customer navigation property
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                orders = orders.Where(o => o.TransactionId.ToString().Contains(searchString) ||
+                                           o.Customer.Email.Contains(searchString));
+            }
+
+            if (showFraudOnly)
+            {
+                orders = orders.Where(o => o.Fraud == 1);
+            }
+
+            var totalOrders = await orders.CountAsync();
+            var paginatedOrders = await orders.Skip((pageNumber.Value - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var viewModel = new OrderViewModel
+            {
+                Orders = paginatedOrders,
+                SearchString = searchString,
+                ShowFraudOnly = showFraudOnly,
+                PageNumber = pageNumber.Value,
+                TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize)
+            };
+
+            return View(viewModel);
         }
         // Add more admin-specific actions as needed
     }

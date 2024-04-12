@@ -26,5 +26,7 @@ namespace _2AuthenticAPP.Models
 
         // Add the LineItems navigation property
         public virtual ICollection<LineItem> LineItems { get; set; }
+        public virtual Customer Customer { get; set; }
+
     }
 }
