@@ -133,7 +133,7 @@ namespace _2AuthenticAPP.Controllers
 
             return View(paginatedProducts);
         }
-
+         
         public async Task<IActionResult> Details(int id)
         {
             var product = await _context.Products
