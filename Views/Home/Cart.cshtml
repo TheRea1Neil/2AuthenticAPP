@@ -4,7 +4,7 @@
     ViewData["Title"] = "Cart";
 }
 
-<div class="cart-styles">
+<div class="product-details-container">
     <!-- Add this class to the top-level container -->
 
     <h1>Cart</h1>
@@ -15,11 +15,10 @@
     }
     else
     {
-        <div class="cart-items">
             @foreach (var item in Model)
             {
-                <div class="cart-item">
-                    <div class="item-image">
+                <div class="product-details-card">
+                    <div class="product-image">
                         <img src="@item.ImgLink" alt="@item.Name">
                     </div>
                     <div class="item-details">
@@ -42,7 +41,6 @@
                 </div>
                 <br />
             }
-        </div>
         <div class="cart-actions">
             <a href="@Url.Action("Checkout", "Home")" class="btn btn-primary">Continue to Payment</a>
         </div>
