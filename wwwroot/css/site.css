@@ -218,8 +218,8 @@ main {
 }
 
 .product-card img {
-    height: 180px; /* Define exact height */
-    width: 180px; /* Ensure the image covers the width */
+    height: 100px; /* Define exact height */
+    width: 100px; /* Ensure the image covers the width */
     object-fit: scale-down; /* Ensures the image is scaled down to fit without being cut off */
 }
 
@@ -349,10 +349,9 @@ main {
     }
 
 .product-image img {
-    width: 100%;
-    height: auto;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
-    max-height: 300px;
 }
 
 .product-specs {
@@ -374,8 +373,8 @@ main {
 }
 
 .image-container img {
-    height: 180px;
-    width: 180px; /* Set to the desired width */
+    height: 100px;
+    width: 100px; /* Set to the desired width */
     object-fit: cover; /* This will cover the area without stretching the image */
 }
 
@@ -480,8 +479,8 @@ main {
 }
 
     .product-image img {
-        width: 180px;
-        height: 180px;
+        width: 100px;
+        height: 100px;
         object-fit: contain;
     }
 
@@ -881,8 +880,8 @@ main {
 
     /* Style for item images */
     .cart-page-container .cart-item-image img {
-        width: 180px; /* Fixed width for consistency */
-        height: 180px;
+        width: 100px; /* Fixed width for consistency */
+        height: 100px;
         display: block;
         margin: auto;
     }
@@ -935,7 +934,7 @@ main {
     }
 
     .cart-page-container .cart-item-image img {
-        width: 180px;
-        height: 180px;
+        width: 100px;
+        height: 100px;
     }
 }
