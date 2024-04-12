@@ -114,17 +114,35 @@
         <div class="product-description">
             <p>@Model.Recommendations[0]l.Description</p>
         </div>
+    </div>
+    <div class="product-image">
+        <img src="@Model.Recommendations[0].ImgLink" alt="@Model.Recommendations[0].Name">
         <div class="actions">
             <form asp-controller="Home" asp-action="AddToCart" method="post">
                 <input type="hidden" name="productId" value="@Model.Recommendations[0].ProductId" />
                 <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
             </form>
         </div>
-    </div>
-    <div class="product-image">
-        <img src="@Model.Recommendations[0].ImgLink" alt="@Model.Recommendations[0].Name">
         <img src="@Model.Recommendations[1].ImgLink" alt="@Model.Recommendations[1].Name">
+        <div class="actions">
+            <form asp-controller="Home" asp-action="AddToCart" method="post">
+                <input type="hidden" name="productId" value="@Model.Recommendations[0].ProductId" />
+                <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
+            </form>
+        </div>
         <img src="@Model.Recommendations[2].ImgLink" alt="@Model.Recommendations[2].Name">
+        <div class="actions">
+            <form asp-controller="Home" asp-action="AddToCart" method="post">
+                <input type="hidden" name="productId" value="@Model.Recommendations[0].ProductId" />
+                <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
+            </form>
+        </div>
         <img src="@Model.Recommendations[3].ImgLink" alt="@Model.Recommendations[3].Name">
+        <div class="actions">
+            <form asp-controller="Home" asp-action="AddToCart" method="post">
+                <input type="hidden" name="productId" value="@Model.Recommendations[0].ProductId" />
+                <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
+            </form>
+        </div>
     </div>
 </div>
