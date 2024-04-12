@@ -162,6 +162,27 @@ namespace _2AuthenticAPP.Controllers
                 .Where(li => li.ProductId == product.ProductId)
                 .AverageAsync(li => (double?)li.Rating) ?? 0.0;
 
+            // These are the products recommended for the individual product based on content filtering model 
+            var recommendedProducts = _context.ItemBasedRecommendations
+                .Where(rp => rp.ProductId == product.ProductId)
+                .Select(rp => new ItemBasedRecommendation
+                {
+                    ProductId = (byte)product.ProductId,
+                    Name = rp.Name,
+                    Recommendation1 = rp.Recommendation1,
+                    Recommendation2 = rp.Recommendation2,
+                    Recommendation3 = rp.Recommendation3,
+                    Recommendation4 = rp.Recommendation4,
+                    Recommendation5 = rp.Recommendation5,
+                    Recommendation6 = rp.Recommendation6,
+                    Recommendation7 = rp.Recommendation7,
+                    Recommendation8 = rp.Recommendation8,
+                    Recommendation9 = rp.Recommendation9,
+                    Recommendation10 = rp.Recommendation10
+                }).FirstOrDefault();
+
+            ViewBag.Recommendations = recommendedProducts;
+
             return View(product);
         }
 
