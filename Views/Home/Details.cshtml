@@ -77,14 +77,13 @@
 
 <div class="product-details-card">
     <div class="product-header">
-        <h2 class="product-title">@Model.Recommendations[0].Name</h2>
         <div class="product-price-rating">
             <div class="rating">
                 <span>@Model.AverageRating?.ToString("0.0")</span>
                 <span class="star">&#9733;</span>
             </div>
             <div class="price">
-                <span class="price-value">@Model.Recommendations[0].Price?.ToString("C")</span>
+          
             </div>
         </div>
     </div>
@@ -117,30 +116,45 @@
     </div>
     <div class="product-image">
         <img src="@Model.Recommendations[0].ImgLink" alt="@Model.Recommendations[0].Name">
+        <h2 class="product-title">@Model.Recommendations[0].Name</h2>
+        <span class="price-value">@Model.Recommendations[0].Price?.ToString("C")</span>
         <div class="actions">
             <form asp-controller="Home" asp-action="AddToCart" method="post">
                 <input type="hidden" name="productId" value="@Model.Recommendations[0].ProductId" />
                 <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
             </form>
         </div>
+
+
         <img src="@Model.Recommendations[1].ImgLink" alt="@Model.Recommendations[1].Name">
+        <h2 class="product-title">@Model.Recommendations[1].Name</h2>
+        <span class="price-value">@Model.Recommendations[1].Price?.ToString("C")</span>
         <div class="actions">
             <form asp-controller="Home" asp-action="AddToCart" method="post">
-                <input type="hidden" name="productId" value="@Model.Recommendations[0].ProductId" />
+                <input type="hidden" name="productId" value="@Model.Recommendations[1].ProductId" />
                 <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
             </form>
         </div>
+
+
+
         <img src="@Model.Recommendations[2].ImgLink" alt="@Model.Recommendations[2].Name">
+        <h2 class="product-title">@Model.Recommendations[2].Name</h2>
+        <span class="price-value">@Model.Recommendations[2].Price?.ToString("C")</span>
         <div class="actions">
             <form asp-controller="Home" asp-action="AddToCart" method="post">
-                <input type="hidden" name="productId" value="@Model.Recommendations[0].ProductId" />
+                <input type="hidden" name="productId" value="@Model.Recommendations[2].ProductId" />
                 <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
             </form>
         </div>
+
+
         <img src="@Model.Recommendations[3].ImgLink" alt="@Model.Recommendations[3].Name">
+        <h2 class="product-title">@Model.Recommendations[3].Name</h2>
+        <span class="price-value">@Model.Recommendations[3].Price?.ToString("C")</span>
         <div class="actions">
             <form asp-controller="Home" asp-action="AddToCart" method="post">
-                <input type="hidden" name="productId" value="@Model.Recommendations[0].ProductId" />
+                <input type="hidden" name="productId" value="@Model.Recommendations[3].ProductId" />
                 <button type="submit" class="btn btn-add-to-cart">Add to Cart</button>
             </form>
         </div>
