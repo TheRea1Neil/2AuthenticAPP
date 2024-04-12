@@ -63,21 +63,20 @@
             <div class="actions">
                 <a asp-action="AddProduct" class="btn btn-primary">Add Product</a>
             </div>
-<div class="pagination top-pagination">
-    @if (Model.HasPreviousPage)
-    {
-        <a href="@Url.Action("Index", new { pageNumber = Model.PageIndex - 1, showOption = ViewBag.ShowOption })">Prev</a>
-    }
-    @for (int i = 1; i <= Model.TotalPages; i++)
-    {
-        <a class="@(i == Model.PageIndex ? "active" : "")" href="@Url.Action("Index", new { pageNumber = i, showOption = ViewBag.ShowOption })">@i</a>
-    }
-    @if (Model.HasNextPage)
-    {
-        <a href="@Url.Action("Index", new { pageNumber = Model.PageIndex + 1, showOption = ViewBag.ShowOption })">Next</a>
-    }
-</div>
-
+            <div class="pagination top-pagination">
+                @if (Model.HasPreviousPage)
+                {
+                    <a href="@Url.Action("Index", new { pageNumber = Model.PageIndex - 1, showOption = ViewBag.ShowOption })">Prev</a>
+                }
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <a class="@(i == Model.PageIndex ? "active" : "")" href="@Url.Action("Index", new { pageNumber = i, showOption = ViewBag.ShowOption })">@i</a>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <a href="@Url.Action("Index", new { pageNumber = Model.PageIndex + 1, showOption = ViewBag.ShowOption })">Next</a>
+                }
+            </div>
         </div>
 
         <div class="product-row">

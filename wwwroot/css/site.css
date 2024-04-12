@@ -727,7 +727,7 @@ main {
 /* Pagination button styles */
 .btn {
     padding: 8px 16px;
-    background-color: #9E9E9E; /* A medium gray */
+    background-color: #BDBDBD; /* A light gray */
     color: #000;
     text-decoration: none;
     border: none;
@@ -857,3 +857,9 @@ main {
         margin-left: auto;
         margin-right: auto;
     }
+
+.actions .btn {
+    width: auto; /* Override any specific width settings */
+    padding: 0.5em 1em; /* Adjust the padding as needed */
+    display: inline-block; /* Allows the button to shrink to the size of its content */
+}
