@@ -774,7 +774,7 @@ main {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 50vh;
+    height: 100vh;
     text-align: center;
     padding: 0 20px;
     box-sizing: border-box;
