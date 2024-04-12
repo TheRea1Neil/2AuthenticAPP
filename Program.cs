@@ -24,7 +24,7 @@ services.AddAuthentication().AddGoogle(googleOptions =>
 });
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = configuration["DefaultConnection"] ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -38,7 +38,15 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<UserRolesService>();
 
-builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGridSettings"));
+
+
+builder.Services.Configure<SendGridSettings>(options =>
+{
+    options.FromEmail = builder.Configuration["SendGridSettings:FromEmail"];
+    options.EmailName = builder.Configuration["SendGridSettings:EmailName"];
+    options.ApiKey = builder.Configuration["SendGridSettings:ApiKey"];
+});
+
 
 builder.Services.AddSendGrid(options =>
 {

@@ -1,4 +1,6 @@
-﻿namespace _2AuthenticAPP.Data
+﻿using _2AuthenticAPP.Data;
+
+namespace _2AuthenticAPP.Data
 {
     public class SendGridSettings
     {
@@ -8,3 +10,6 @@
         public string ApiKey { get; set; }
     }
 }
+
+    
+   
