@@ -1,0 +1,15 @@
+﻿@model _2AuthenticAPP.Models.Product
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<h2>Delete Product</h2>
+
+<p>Are you sure you want to delete the product "@Model.Name"?</p>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="ProductId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-secondary">Cancel</a>
+</form>

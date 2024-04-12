@@ -82,6 +82,9 @@
     <div class="product-grid">
         <div class="grid-header">
             <h2>Popular Items</h2>
+            <div class="actions">
+                <a asp-action="AddProduct" class="btn btn-primary">Add Product</a>
+            </div>
             <div class="pagination top-pagination">
                 @if (Model.HasPreviousPage)
                 {

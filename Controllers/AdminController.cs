@@ -13,13 +13,15 @@ namespace _2AuthenticAPP.Controllers
         private readonly BorchardtDbContext _context;
         private readonly UserRolesService _userRolesService;
         private readonly UserManager<IdentityUser> _userManager; // Add this line
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         // Modify the constructor to include UserManager<IdentityUser>
-        public AdminController(BorchardtDbContext context, UserRolesService userRolesService, UserManager<IdentityUser> userManager)
+        public AdminController(BorchardtDbContext context, UserRolesService userRolesService, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userRolesService = userRolesService;
-            _userManager = userManager; // Set the _userManager
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<IActionResult> MakeUserAdmin(string userId)
@@ -45,11 +47,12 @@ namespace _2AuthenticAPP.Controllers
         {
             int pageSize = 50;
             var customers = from c in _context.Customers
+                            orderby c.Email != null descending, c.CustomerId
                             select c;
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                customers = customers.Where(c => c.FirstName.Contains(searchString) || c.LastName.Contains(searchString) || c.Email.Contains(searchString));
+                customers = (IOrderedQueryable<Customer>)customers.Where(c => c.FirstName.Contains(searchString) || c.LastName.Contains(searchString) || c.Email.Contains(searchString));
             }
 
             return View(await PaginatedList<Customer>.CreateAsync(customers.AsNoTracking(), pageNumber ?? 1, pageSize));
@@ -201,6 +204,23 @@ namespace _2AuthenticAPP.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserRole(int customerId, string role)
+        {
+            var customer = await _context.Customers.FindAsync(customerId);
+            if (customer != null)
+            {
+                var user = await _userManager.FindByEmailAsync(customer.Email);
+                if (user != null)
+                {
+                    var currentRoles = await _userManager.GetRolesAsync(user);
+                    await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                    await _userManager.AddToRoleAsync(user, role);
+                }
+            }
+            return RedirectToAction(nameof(Customers));
         }
         // Add more admin-specific actions as needed
     }
