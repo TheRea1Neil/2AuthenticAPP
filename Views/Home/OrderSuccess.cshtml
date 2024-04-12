@@ -3,6 +3,7 @@
 }
 
 
+@* If the prediction appears to be a Valid transaction *@
 @if (ViewBag.Prediction == "Valid")
 {
     <h2>Order Success</h2>
@@ -13,7 +14,7 @@
 
 
 }
-else
+else @* If the prediction appears to be a Suspicious transaction *@
 {
         <h2>Order Received</h2>
         <div class="container">
