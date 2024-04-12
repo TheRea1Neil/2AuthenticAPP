@@ -383,7 +383,7 @@ main {
 }
 
     .actions .btn {
-        width: auto; /* Override any specific width settings */
+        width: auto !important; /* Override any specific width settings */
         padding: 0.5em 1em; /* Adjust the padding as needed */
         display: inline-block; /* Allows the button to shrink to the size of its content */
     }
@@ -485,7 +485,7 @@ main {
     width: auto;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 500;
     padding: 8px 16px;
     background-color: #BDBDBD; /* A light gray */
     color: #000;
