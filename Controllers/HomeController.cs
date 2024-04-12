@@ -192,7 +192,8 @@ namespace _2AuthenticAPP.Controllers
         }
 
 
-    //Cart Items
+        //Cart Items
+        [Authorize]
         public async Task<IActionResult> Cart()
         {
             if (User.Identity.IsAuthenticated)
