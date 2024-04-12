@@ -38,7 +38,16 @@ namespace _2AuthenticAPP.Controllers
 
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9, string category = null, int? minParts = null, int? maxParts = null, decimal? minPrice = null, decimal? maxPrice = null, string primaryColor = null, string secondaryColor = null, string showOption = "all")
         {
-            var productsQuery = _productRepo.Products
+            if (User.Identity.IsAuthenticated)
+            {
+                // Get the IdentityUser object for the logged-in user
+                var user = await _userManager.GetUserAsync(User);
+
+                // Query the database to find the customer with the matching email
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+
+
+                var productsQuery = _productRepo.Products
                 .Select(p => new ProductViewModel
                 {
                     ProductId = p.ProductId,
@@ -54,102 +63,281 @@ namespace _2AuthenticAPP.Controllers
                     SecondaryColor = p.SecondaryColor
                 });
 
-            // Apply filters
-            if (!string.IsNullOrEmpty(category))
-            {
-                productsQuery = productsQuery.Where(p => p.Category.Contains(category));
+                var userBasedRecommends = _context.UserBasedRecommendations
+                    .Where(ubr => ubr.CustomerId == customer.CustomerId)
+                    .Select(ubr => new UserBasedRecommendation
+                    {
+                        CustomerId = (short)customer.CustomerId,
+                        Recommendation1 = ubr.Recommendation1,
+                        Recommendation2 = ubr.Recommendation2,
+                        Recommendation3 = ubr.Recommendation3,
+                        Recommendation4 = ubr.Recommendation4,
+                        Recommendation5 = ubr.Recommendation5,
+                        Recommendation6 = ubr.Recommendation6,
+                        Recommendation7 = ubr.Recommendation7,
+                        Recommendation8 = ubr.Recommendation8,
+                        Recommendation9 = ubr.Recommendation9,
+                        Recommendation10 = ubr.Recommendation10,
+                        Recommendation11 = ubr.Recommendation11,
+                        Recommendation12 = ubr.Recommendation12,
+                        Recommendation13 = ubr.Recommendation13,
+                        Recommendation14 = ubr.Recommendation14,
+                        Recommendation15 = ubr.Recommendation15,
+                        Recommendation16 = ubr.Recommendation16,
+                        Recommendation17 = ubr.Recommendation17,
+                        Recommendation18 = ubr.Recommendation18,
+                        Recommendation19 = ubr.Recommendation19,
+                        Recommendation20 = ubr.Recommendation20,
+                        Recommendation21 = ubr.Recommendation21,
+                        Recommendation22 = ubr.Recommendation22,
+                        Recommendation23 = ubr.Recommendation23,
+                        Recommendation24 = ubr.Recommendation24,
+                        Recommendation25 = ubr.Recommendation25,
+                        Recommendation26 = ubr.Recommendation26,
+                        Recommendation27 = ubr.Recommendation27,
+                        Recommendation28 = ubr.Recommendation28,
+                        Recommendation29 = ubr.Recommendation29,
+                        Recommendation30 = ubr.Recommendation30,
+                        Recommendation31 = ubr.Recommendation31,
+                        Recommendation32 = ubr.Recommendation32,
+                        Recommendation33 = ubr.Recommendation33,
+                        Recommendation34 = ubr.Recommendation34,
+                        Recommendation35 = ubr.Recommendation35,
+                        Recommendation36 = ubr.Recommendation36,
+                    }).FirstOrDefault();
+
+
+                var recommendations = new List<Product>();
+                for (int i = 1; i <= 36; i++)
+                {
+                    var propertyName = $"Recommendation{i}";
+                    var propertyValue = userBasedRecommends?.GetType().GetProperty(propertyName)?.GetValue(userBasedRecommends);
+                    if (propertyValue != null && propertyValue is string recommendation)
+                    {
+                        var recommendedProduct = _context.Products.FirstOrDefault(p => p.Name == recommendation);
+                        if (recommendedProduct != null)
+                        {
+                            recommendations.Add(recommendedProduct);
+                        }
+                    }
+                }
+
+                ViewBag.Recommendations = recommendations;
+
+
+                // Apply filters
+                if (!string.IsNullOrEmpty(category))
+                {
+                    productsQuery = productsQuery.Where(p => p.Category.Contains(category));
+                }
+
+                if (minParts.HasValue)
+                {
+                    productsQuery = productsQuery.Where(p => p.NumParts >= minParts.Value);
+                }
+
+                if (maxParts.HasValue)
+                {
+                    productsQuery = productsQuery.Where(p => p.NumParts <= maxParts.Value);
+                }
+
+                if (minPrice.HasValue)
+                {
+                    productsQuery = productsQuery.Where(p => p.Price >= minPrice.Value);
+                }
+
+                if (maxPrice.HasValue)
+                {
+                    productsQuery = productsQuery.Where(p => p.Price <= maxPrice.Value);
+                }
+
+                if (!string.IsNullOrEmpty(primaryColor))
+                {
+                    productsQuery = productsQuery.Where(p => p.PrimaryColor == primaryColor);
+                }
+
+                if (!string.IsNullOrEmpty(secondaryColor))
+                {
+                    productsQuery = productsQuery.Where(p => p.SecondaryColor == secondaryColor);
+                }
+
+                // Apply show option filter
+                switch (showOption)
+                {
+                    case "6":
+                        pageSize = 6;
+                        break;
+                    case "12":
+                        pageSize = 12;
+                        break;
+                    case "18":
+                        pageSize = 18;
+                        break;
+                    default:
+                        // Show All (default 9 per page)
+                        break;
+                }
+
+                // Pagination logic
+                var paginatedProducts = await PaginatedList<ProductViewModel>.CreateAsync(productsQuery, pageNumber, pageSize);
+
+                // Set ViewBag values for selected filter options
+                ViewBag.SelectedCategory = category;
+                ViewBag.SelectedMinParts = minParts;
+                ViewBag.SelectedMaxParts = maxParts;
+                ViewBag.SelectedMinPrice = minPrice;
+                ViewBag.SelectedMaxPrice = maxPrice;
+                ViewBag.SelectedPrimaryColor = primaryColor;
+                ViewBag.SelectedSecondaryColor = secondaryColor;
+                ViewBag.ShowOption = showOption;
+
+                // Fetch and process categories
+                var allCategories = await _context.Products
+                    .Select(p => p.Category)
+                    .ToListAsync();
+
+                var uniqueCategories = allCategories
+                    .SelectMany(c => c.Split('-'))
+                    .Select(c => c.Trim())
+                    .Distinct()
+                    .ToList();
+
+                ViewBag.Categories = uniqueCategories;
+
+                // Fetch and process primary colors
+                var allPrimaryColors = await _context.Products
+                    .Select(p => p.PrimaryColor)
+                    .Distinct()
+                    .ToListAsync();
+
+                ViewBag.PrimaryColors = allPrimaryColors;
+
+                // Fetch and process secondary colors
+                var allSecondaryColors = await _context.Products
+                    .Select(p => p.SecondaryColor)
+                    .Distinct()
+                    .ToListAsync();
+
+                ViewBag.SecondaryColors = allSecondaryColors;
+
+                return View(paginatedProducts);
             }
-
-            if (minParts.HasValue)
+            else
             {
-                productsQuery = productsQuery.Where(p => p.NumParts >= minParts.Value);
+                var productsQuery = _productRepo.Products
+                .Select(p => new ProductViewModel
+                {
+                    ProductId = p.ProductId,
+                    Name = p.Name,
+                    Price = p.Price,
+                    ImgLink = p.ImgLink,
+                    AverageRating = _context.LineItems
+                        .Where(li => li.ProductId == p.ProductId)
+                        .Average(li => (int?)li.Rating),
+                    Category = p.Category,
+                    NumParts = p.NumParts,
+                    PrimaryColor = p.PrimaryColor,
+                    SecondaryColor = p.SecondaryColor
+                });
+
+                // Apply filters
+                if (!string.IsNullOrEmpty(category))
+                {
+                    productsQuery = productsQuery.Where(p => p.Category.Contains(category));
+                }
+
+                if (minParts.HasValue)
+                {
+                    productsQuery = productsQuery.Where(p => p.NumParts >= minParts.Value);
+                }
+
+                if (maxParts.HasValue)
+                {
+                    productsQuery = productsQuery.Where(p => p.NumParts <= maxParts.Value);
+                }
+
+                if (minPrice.HasValue)
+                {
+                    productsQuery = productsQuery.Where(p => p.Price >= minPrice.Value);
+                }
+
+                if (maxPrice.HasValue)
+                {
+                    productsQuery = productsQuery.Where(p => p.Price <= maxPrice.Value);
+                }
+
+                if (!string.IsNullOrEmpty(primaryColor))
+                {
+                    productsQuery = productsQuery.Where(p => p.PrimaryColor == primaryColor);
+                }
+
+                if (!string.IsNullOrEmpty(secondaryColor))
+                {
+                    productsQuery = productsQuery.Where(p => p.SecondaryColor == secondaryColor);
+                }
+
+                // Apply show option filter
+                switch (showOption)
+                {
+                    case "6":
+                        pageSize = 6;
+                        break;
+                    case "12":
+                        pageSize = 12;
+                        break;
+                    case "18":
+                        pageSize = 18;
+                        break;
+                    default:
+                        // Show All (default 9 per page)
+                        break;
+                }
+
+                // Pagination logic
+                var paginatedProducts = await PaginatedList<ProductViewModel>.CreateAsync(productsQuery, pageNumber, pageSize);
+
+                // Set ViewBag values for selected filter options
+                ViewBag.SelectedCategory = category;
+                ViewBag.SelectedMinParts = minParts;
+                ViewBag.SelectedMaxParts = maxParts;
+                ViewBag.SelectedMinPrice = minPrice;
+                ViewBag.SelectedMaxPrice = maxPrice;
+                ViewBag.SelectedPrimaryColor = primaryColor;
+                ViewBag.SelectedSecondaryColor = secondaryColor;
+                ViewBag.ShowOption = showOption;
+
+                // Fetch and process categories
+                var allCategories = await _context.Products
+                    .Select(p => p.Category)
+                    .ToListAsync();
+
+                var uniqueCategories = allCategories
+                    .SelectMany(c => c.Split('-'))
+                    .Select(c => c.Trim())
+                    .Distinct()
+                    .ToList();
+
+                ViewBag.Categories = uniqueCategories;
+
+                // Fetch and process primary colors
+                var allPrimaryColors = await _context.Products
+                    .Select(p => p.PrimaryColor)
+                    .Distinct()
+                    .ToListAsync();
+
+                ViewBag.PrimaryColors = allPrimaryColors;
+
+                // Fetch and process secondary colors
+                var allSecondaryColors = await _context.Products
+                    .Select(p => p.SecondaryColor)
+                    .Distinct()
+                    .ToListAsync();
+
+                ViewBag.SecondaryColors = allSecondaryColors;
+
+                return View(paginatedProducts);
             }
-
-            if (maxParts.HasValue)
-            {
-                productsQuery = productsQuery.Where(p => p.NumParts <= maxParts.Value);
-            }
-
-            if (minPrice.HasValue)
-            {
-                productsQuery = productsQuery.Where(p => p.Price >= minPrice.Value);
-            }
-
-            if (maxPrice.HasValue)
-            {
-                productsQuery = productsQuery.Where(p => p.Price <= maxPrice.Value);
-            }
-
-            if (!string.IsNullOrEmpty(primaryColor))
-            {
-                productsQuery = productsQuery.Where(p => p.PrimaryColor == primaryColor);
-            }
-
-            if (!string.IsNullOrEmpty(secondaryColor))
-            {
-                productsQuery = productsQuery.Where(p => p.SecondaryColor == secondaryColor);
-            }
-
-            // Apply show option filter
-            switch (showOption)
-            {
-                case "6":
-                    pageSize = 6;
-                    break;
-                case "12":
-                    pageSize = 12;
-                    break;
-                case "18":
-                    pageSize = 18;
-                    break;
-                default:
-                    // Show All (default 9 per page)
-                    break;
-            }
-
-            // Pagination logic
-            var paginatedProducts = await PaginatedList<ProductViewModel>.CreateAsync(productsQuery, pageNumber, pageSize);
-
-            // Set ViewBag values for selected filter options
-            ViewBag.SelectedCategory = category;
-            ViewBag.SelectedMinParts = minParts;
-            ViewBag.SelectedMaxParts = maxParts;
-            ViewBag.SelectedMinPrice = minPrice;
-            ViewBag.SelectedMaxPrice = maxPrice;
-            ViewBag.SelectedPrimaryColor = primaryColor;
-            ViewBag.SelectedSecondaryColor = secondaryColor;
-            ViewBag.ShowOption = showOption;
-
-            // Fetch and process categories
-            var allCategories = await _context.Products
-                .Select(p => p.Category)
-                .ToListAsync();
-
-            var uniqueCategories = allCategories
-                .SelectMany(c => c.Split('-'))
-                .Select(c => c.Trim())
-                .Distinct()
-                .ToList();
-
-            ViewBag.Categories = uniqueCategories;
-
-            // Fetch and process primary colors
-            var allPrimaryColors = await _context.Products
-                .Select(p => p.PrimaryColor)
-                .Distinct()
-                .ToListAsync();
-
-            ViewBag.PrimaryColors = allPrimaryColors;
-
-            // Fetch and process secondary colors
-            var allSecondaryColors = await _context.Products
-                .Select(p => p.SecondaryColor)
-                .Distinct()
-                .ToListAsync();
-
-            ViewBag.SecondaryColors = allSecondaryColors;
-
-            return View(paginatedProducts);
+                
         }
 
         public async Task<IActionResult> Details(int id)
