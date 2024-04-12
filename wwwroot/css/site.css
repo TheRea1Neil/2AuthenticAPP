@@ -802,3 +802,25 @@ main {
         .centered-about p:last-of-type {
             margin-top: 2em;
         }
+
+/* Styles specific to checkout box */
+.checkout-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+}
+
+    .checkout-box .order-total {
+        align-self: flex-end;
+        margin-top: 20px; /* Adds space between the items and the total */
+    }
+
+    .checkout-box .checkout-actions {
+        align-self: flex-end;
+        margin-top: 20px; /* Adds space between the total and the button */
+    }
+
+    .checkout-box .cart-summary {
+        flex-grow: 1;
+    }
