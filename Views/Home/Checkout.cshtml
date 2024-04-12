@@ -2,10 +2,15 @@
 
 @{
     ViewData["Title"] = "Checkout";
+
 }
 
+
+
+<h2>Checkout</h2>
+
 <div class="container">
-    <h2>Checkout</h2>
+
 
     <div class="cart-summary">
         @foreach (var item in Model.CartItems)
@@ -17,16 +22,20 @@
                     <p>Price: @item.Price.Value.ToString("C")</p>
                 </div>
             </div>
+            <br />
         }
+        <br />
+        <div class="order-total">
+            <h4>Total Amount: @Model.TotalAmount.ToString("C")</h4>
+        </div>
+
+        <div class="checkout-actions">
+            <form asp-action="PlaceOrder" method="post">
+                <button type="submit" class="btn btn-primary">Place Order</button>
+            </form>
+        </div>
+
     </div>
 
-    <div class="order-total">
-        <h4>Total Amount: @Model.TotalAmount.ToString("C")</h4>
-    </div>
-
-    <div class="checkout-actions">
-        <form asp-action="PlaceOrder" method="post">
-            <button type="submit" class="btn btn-primary">Place Order</button>
-        </form>
-    </div>
+   
 </div>

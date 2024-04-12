@@ -353,22 +353,35 @@ namespace _2AuthenticAPP.Controllers
                 {
                     var cartedItems = _productRepo.GetCartItems(customer.CustomerId);
 
+                    // Testing purpose variable
+                    List<string> countries = new List<string> { "China", "India", "Russia", "USA", "United Kingdom" };
+                    List<string> banks = new List<string> { "Barclays", "HSBC", "Lloyds", "Halifax", "Metro", "RBS", "Monzo" };
+                    List<string> cards = new List<string> { "MasterCard", "Visa" };
+
+                    Random random = new Random();
+                    int randomIndexCountries = random.Next(0, countries.Count);
+                    int randomIndexBanks = random.Next(0, banks.Count);
+                    int randomIndexCards = random.Next(0, cards.Count);
+
+                 
+                    // Load the order info (some fields are pre-set/generated randomly for testing purpose)
                     var order = new Order
                     {
                         CustomerId = customer.CustomerId,
                         Date = DateTime.Now,
                         DayOfWeek = DateTime.Now.DayOfWeek.ToString(),
                         Time = (byte)DateTime.Now.Hour,
-                        EntryMode = "Online",
+                        EntryMode = "CVC",
                         Amount = (double?)cartedItems.Sum(item => item.Price.Value * item.Qty),
-                        TypeOfTransaction = "Purchase",
-                        CountryOfTransaction = "USA", // Set the appropriate country
-                        ShippingAddress = "", // Set the shipping address
-                        Bank = "", // Set the bank information
-                        TypeOfCard = "", // Set the type of card
-                        Fraud = 0 // Set the fraud flag
+                        TypeOfTransaction = "Online",
+                        CountryOfTransaction = countries[randomIndexCountries], 
+                        ShippingAddress = countries[randomIndexCountries], 
+                        Bank = banks[randomIndexBanks], 
+                        TypeOfCard = cards[randomIndexCards], 
+                        Fraud = null // Set the fraud flag to null, since it's not confirm yet.
                     };
 
+                    // Add the order to the Orders table 
                     _context.Orders.Add(order);
                     _context.SaveChanges();
 
@@ -378,16 +391,13 @@ namespace _2AuthenticAPP.Controllers
                         _productRepo.RemoveFromCart(customer.CustomerId, item.ProductId);
                     }
 
-                    return RedirectToAction("OrderSuccess");
+                    ViewBag.Prediction = FraudPredict(order.CustomerId, order.Date, order.DayOfWeek, order.Time, order.EntryMode, order.Amount, order.TypeOfTransaction, order.CountryOfTransaction, order.ShippingAddress, order.Bank, order.TypeOfCard);
+
+                    return View("OrderSuccess");
                 }
             }
 
             return RedirectToAction("Login", "Account");
-        }
-
-        public IActionResult OrderSuccess()
-        {
-            return View();
         }
 
 
@@ -538,20 +548,20 @@ namespace _2AuthenticAPP.Controllers
         // Perdiction Realm
 
        [HttpPost]
-        public IActionResult Predict(int customerId, DateTime date, string dayOfWeek, int time, string entryMode, float amount, string typeOfTrans, string countryOfTrans, string shippingAddress, string bank, string typeOfCard)
+        public string FraudPredict(int? customerId, DateTime? date, string dayOfWeek, int? time, string entryMode, double? amount, string typeOfTrans, string countryOfTrans, string shippingAddress, string bank, string typeOfCard)
         {
             // Dictionary mapping the numeric prediction to string
             var class_type_dict = new Dictionary<int, string>
             {
                 { 0, "Valid" },
-                { 1, "Fraud" }
+                { 1, "Suspicious" }
             };
 
             // Calculate days since January 1, 2023
 
             var january1_2023 = new DateTime(2023, 1, 1);
 
-            var daySinceJan12023 = Math.Abs((date - january1_2023).Days);
+            var daySinceJan12023 = (date - january1_2023)?.Days;
 
             var input = new List<float>
             {
@@ -607,6 +617,7 @@ namespace _2AuthenticAPP.Controllers
                 NamedOnnxValue.CreateFromTensor("float_input", inputTensor)
             };
 
+            string predictionResult;
 
             using (var results = _inferenceSession.Run(inputs)) // makes the prediction with the inputs from the form (i.e. class_type 1-7)
             {
@@ -614,16 +625,15 @@ namespace _2AuthenticAPP.Controllers
                 if (prediction != null && prediction.Length > 0)
                 {
                     // Use the prediction to get the animal type from the dictionary
-                    var animalType = class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown");
-                    ViewBag.Prediction = animalType;
+                     predictionResult = class_type_dict.GetValueOrDefault((int)prediction[0], "Unknown");
                 }
                 else
                 {
-                    ViewBag.Prediction = "Error: Please contact our staff to place you order. Call: 111-222-5555";
+                     predictionResult = "Error: Please contact our staff to place you order. Call: 111-222-5555";
                 }
             }
 
-            return View("Index");
+            return predictionResult;
         }
     }
 }

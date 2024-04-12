@@ -242,7 +242,7 @@ namespace _2AuthenticAPP.Controllers
             var class_type_dict = new Dictionary<int, string>
             {
                 { 0, "Valid" },
-                { 1, "Fraud" }
+                { 1, "Suspicious" }
             };
 
 

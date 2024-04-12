@@ -2,15 +2,24 @@
     ViewData["Title"] = "Order Success";
 }
 
-<div class="container">
+
+@if (ViewBag.Prediction == "Valid")
+{
     <h2>Order Success</h2>
-    <p>Thank you for your purchase! Your order has been successfully placed.</p>
-    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Continue Shopping</a>
-</div>
+    <div class="container">
+        <p>Thank you for your purchase! Your order has been successfully placed.</p>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Continue Shopping</a>
+    </div>
 
 
-<div class="container">
-    <h2>Order Received</h2>
-    <p>Thank you for your purchase! Your order will be reviewed by our.</p>
-    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Continue Shopping</a>
-</div>
+}
+else
+{
+        <h2>Order Received</h2>
+        <div class="container">
+            <p>Order Summitted. Your order will be reviewed by our specialist.</p>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Continue Shopping</a>
+        </div>
+}
+
+
